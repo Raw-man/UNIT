@@ -1,0 +1,54 @@
+name: MSYS2 Build
+
+on: [push, pull_request]
+
+jobs:
+  msys2-build:
+    runs-on: windows-latest
+
+    permissions:
+      contents: write
+
+    defaults:
+      run:
+        shell: msys2 {0} # This ensures all steps run inside the MSYS2 bash
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64 # Recommended default for modern C++ projects
+          update: true
+          # Install necessary build tools via pacman automatically
+          install: >-
+            mingw-w64-ucrt-x86_64-clang
+            mingw-w64-ucrt-x86_64-cmake
+            mingw-w64-ucrt-x86_64-ninja
+            mingw-w64-ucrt-x86_64-mpg123
+            mingw-w64-ucrt-x86_64-lame
+            git
+
+      - name: Configure and Build
+        run: |
+          cmake -S . -B build -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_STANDARD_LIBRARIES="-lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 -lshlwapi" -DCMAKE_EXE_LINKER_FLAGS="-static -static-libgcc -static-libstdc++" -DGLM_ENABLE_SIMD_SSE2=ON -DGLM_ENABLE_SIMD_SSE3=ON -DGLM_ENABLE_SIMD_SSE4_1=ON -DGLM_ENABLE_SIMD_SSE4_2=ON -Dmpg123_LIBRARY="${MSYSTEM_PREFIX}/lib/libmpg123.a" -DMP3LAME_LIBRARY="${MSYSTEM_PREFIX}/lib/libmp3lame.a"
+          cmake --build build --parallel
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+            name: UNIT-windows-exe
+            path: build/*.exe
+ 
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+            files: build/*.exe
+            generate_release_notes: true
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
