@@ -1,6 +1,18 @@
 name: MSYS2 Build
 
-on: [push, pull_request]
+on:
+  push:
+    paths:
+      - 'src/**'
+      - 'include/**'
+      - 'CMakeLists.txt'
+      - '.github/workflows/msys2.yml'
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'include/**'
+      - 'CMakeLists.txt'
+      - '.github/workflows/msys2.yml'
 
 jobs:
   msys2-build:
