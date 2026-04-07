@@ -42,3 +42,8 @@ cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build
 ```
 
+## Related Projects
+
+*   **[NNL](https://github.com/Raw-man/NNL)**: The underlying library responsible for asset processing.
+*   **[Web Viewer](https://rcjn.itch.io/view)**: A browser-based tool for inspection of game assets.
+
