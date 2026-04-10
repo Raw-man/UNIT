@@ -39,11 +39,13 @@ jobs:
             autoconf \
             automake \
             libtool \
+            libltdl-dev \
             zip
       - name: Build Static libmpg123
         run: |
           git clone https://github.com/libsdl-org/mpg123
           cd mpg123
+          autoreconf -vif 
           ./configure --enable-static=yes --enable-shared=no --with-cpu=x86-64
           make -j$(nproc)
           # We don't 'make install' to avoid messing with system paths; 
