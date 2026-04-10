@@ -50,17 +50,23 @@ jobs:
           cmake -S . -B build -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_STANDARD_LIBRARIES="-lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 -lshlwapi" -DCMAKE_EXE_LINKER_FLAGS="-static -static-libgcc -static-libstdc++" -DGLM_ENABLE_SIMD_SSE2=ON -DGLM_ENABLE_SIMD_SSE3=ON -DGLM_ENABLE_SIMD_SSE4_1=ON -DGLM_ENABLE_SIMD_SSE4_2=ON -Dmpg123_LIBRARY="${MSYSTEM_PREFIX}/lib/libmpg123.a" -DMP3LAME_LIBRARY="${MSYSTEM_PREFIX}/lib/libmp3lame.a"
           cmake --build build --parallel
 
+      - name: Prepare for Release
+        run: |
+          cd build
+          zip UNIT-windows-x64.zip unit.exe
+          echo "ZIP_PATH=build/UNIT-windows-x64.zip" >> $GITHUB_ENV
+
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
-            name: UNIT-windows-exe
-            path: build/*.exe
+            name: UNIT-windows-x64
+            path: build/unit.exe
  
       - name: Release
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
-            files: build/*.exe
+            files: ${{ env.ZIP_PATH }}
             generate_release_notes: true
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

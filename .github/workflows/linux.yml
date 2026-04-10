@@ -73,8 +73,8 @@ jobs:
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
-            name: UNIT-linux-bin
-            path: ${{ env.ZIP_PATH }}
+            name: UNIT-linux-x64
+            path: build/unit
 
       - name: Release
         uses: softprops/action-gh-release@v2
