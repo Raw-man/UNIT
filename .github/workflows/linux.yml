@@ -35,7 +35,11 @@ jobs:
             ninja-build \
             clang \
             libmpg123-dev \
-            libmp3lame-dev
+            libmp3lame-dev \
+            autoconf \
+            automake \
+            libtool \
+            zip
       - name: Build Static libmpg123
         run: |
           git clone https://github.com/libsdl-org/mpg123
