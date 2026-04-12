@@ -31,7 +31,7 @@ find_package(Threads REQUIRED)
 FetchContent_Declare(
     NNL
     GIT_REPOSITORY https://github.com/Raw-man/NNL.git
-    GIT_TAG        main
+    GIT_TAG        1.0.1
 )
 
 FetchContent_Declare(
