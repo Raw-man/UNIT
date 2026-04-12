@@ -10,9 +10,14 @@ Ultimate Ninja Impact Toolbox is a CLI program dedicated to the modding of two P
 ## Features 
 
 -   **Archive Management**:
-Unpack and repack various game data archives.
+Unpack and repack various game data archives (e.g *.BIN files).
 -   **Format Conversion**:
-Export assets to and import from standard exchange formats, such as **WAV**, **glTF** and **PNG**.
+Export assets to and import from standard exchange formats, such as glTF and PNG. Supports:
+    - 3D & Environment: models, lights, cameras, fog configs.
+    - 2D: textures, text archives, minimap configs.
+    - Audio: sound banks.
+  
+![naruto](https://github.com/user-attachments/assets/453d3dd1-3d77-4dc9-9e1c-f227ad6de514)
 
 ## Usage
 
@@ -46,4 +51,3 @@ cmake --build build
 
 *   **[NNL](https://github.com/Raw-man/NNL)**: The underlying library responsible for asset processing.
 *   **[Web Viewer](https://rcjn.itch.io/view)**: A browser-based tool for inspection of game assets.
-
