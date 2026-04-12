@@ -304,7 +304,7 @@ bool ImportModelContainer(const ImportMdlOpt& opt) {
     asset_container[asset::Asset3D::kTextureContainer] = texture::Export(texture_cont);
   }
 
-  assert(asset_container->size() > 0);
+  assert(asset_container.size() > 0);
 
   auto bin_container = asset::Export(asset_container);
 
