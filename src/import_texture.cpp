@@ -31,7 +31,7 @@ bool ImportTextureContainer(const ImportImgOpt& opt) {
 
   if (image_files.size() > textures.size()) {
     if (!opt.base_path.empty()) {
-      UNIT_LOG_WARN("the base container has less textures, errors may occur");
+      UNIT_LOG_WARN("the base container has fewer textures, errors may occur");
     }
 
     textures.resize(image_files.size());
