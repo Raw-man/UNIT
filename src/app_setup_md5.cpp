@@ -18,7 +18,7 @@ void App::RunSubcmdMD5() {
 }
 
 void App::SetUpSubcmdMD5() {
-  auto* sub = this->add_subcommand("md5", "Generate an md5 hashsum list for a .dig/.bin archive");
+  auto* sub = this->add_subcommand("md5", "Generate an md5 hashsum list for a .BIN archive");
 
   sub->group("ADVANCED SUBCOMMANDS");
 
@@ -26,7 +26,7 @@ void App::SetUpSubcmdMD5() {
 
   sub->usage("\nunit md5 <INPUT> <OUTPUT>");
 
-  sub->add_option("-i,--input,input", md5_opt.input_path, "An input path to the main game archive")
+  sub->add_option("-i,--input,input", md5_opt.input_path, "An input path to a primary data archive (.BIN file)")
       ->required()
       ->transform(NormalizePath)
       ->check(CLI::ExistingFile);

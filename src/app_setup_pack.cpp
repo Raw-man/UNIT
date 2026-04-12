@@ -32,14 +32,14 @@ void App::RunSubcmdPackDig() {
 }
 
 void App::SetUpSubcmdPackDig(CLI::App* pack) {
-  auto* sub = pack->add_subcommand("cfcdig", "Pack the main game archive (.bin/.dig)");
+  auto* sub = pack->add_subcommand("cfcdig", "Pack the main data archive (.BIN file)");
   sub->alias("dig");
   sub->alias("bin");
   sub->fallthrough(true);
 
   sub->usage(
       "This container represents the main (or one of the main) game archives "
-      "(*.bin or CFC.DIG files) that store all assets. Note: ANY changes to "
+      "(*.BIN or CFC.DIG files) that store all assets. Note: ANY changes to "
       "them may BREAK the games. In NSUNI, the archives are encrypted (and "
       "stored in a .PGD container). Integrity checks are performed on their "
       "entries using MD5 hashes (from .md5 files) "

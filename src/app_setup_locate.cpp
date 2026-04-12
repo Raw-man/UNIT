@@ -126,20 +126,11 @@ void App::SetUpSubcmdLocFile(CLI::App* loc) {
 
   SetUpSubcmdLocShared(sub_file, loc_opt.search_path);
 
-  std::map<std::string, int> mapping{
-      {"b", 1},            // bytes
-      {"k", 1024},         // kilobytes
-      {"kb", 1024},        // kilobytes
-      {"m", 1024 * 1024},  // megabytes
-      {"mb", 1024 * 1024}  // megabytes
-  };
-
   sub_file
       ->add_option("--size", loc_opt.needle_size,
                    "Use only the first n bytes (or kb, mb) of the input file "
                    "for matching.")
-      ->transform(CLI::AsNumberWithUnit(mapping, {}, "DATA UNIT"))
-      ->check(CLI::PositiveNumber);
+      ->transform(CLI::AsSizeValue(false));
 
   sub_file->callback([this, sub_file]() {
     if (this->print_config) this->LogInfo("\n\n" + sub_file->config_to_str(true));

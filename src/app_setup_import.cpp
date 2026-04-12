@@ -38,7 +38,7 @@ void SetUpComTextureOpt(CLI::App* texture_group, Opt& imp_opt) {
       ->add_option("--tcomp-lvl", imp_opt.texture_compress_lvl,
                    "Set texture compression level: 0 - best quality, big "
                    "files, poor performance on PSP")
-      ->check(CLI::Range(0, 2))
+      ->check(CLI::Range(0u, 2u))
       ->capture_default_str();
 
   texture_group
@@ -65,14 +65,14 @@ void SetUpComTextureOpt(CLI::App* texture_group, Opt& imp_opt) {
         ->add_option("--max-mm", imp_opt.max_mm,
                      "Set the maximum mipmap level. Improves performance, "
                      "reduces artifacts at large distances")
-        ->check(CLI::Range(0, 7))
+        ->check(CLI::Range(0u, 7u))
         ->capture_default_str();
 
     texture_group
         ->add_option("--alpha", imp_opt.alpha_levels,
                      "Quantize the alpha level. This might improve texture "
                      "quality when compression is used")
-        ->check(CLI::Range(1, 256))
+        ->check(CLI::Range(1u, 256u))
         ->capture_default_str();
   }
 }
@@ -219,7 +219,7 @@ void App::SetUpSubcmdImpMdl(CLI::App* sub) {
       ->add_option("--vcomp-lvl", imp_opt.compress_lvl,
                    "Compress vertex attributes: 0 - best quality, big files, "
                    "worse performance on PSP")
-      ->check(CLI::Range(0, 2))
+      ->check(CLI::Range(0u, 2u))
       ->capture_default_str();
 
   SetUpComTextureOpt(texture_group, imp_opt);
@@ -341,7 +341,7 @@ void App::SetUpSubcmdImpMinimap(CLI::App* sub) {
 
   sub_min->add_option("--width", imp_opt.texture_width, "The width of the respective minimap texture")
       ->required()
-      ->check(CLI::Range(128, 1024));
+      ->check(CLI::Range(128u, 1024u));
 }
 
 void App::SetUpSubcmdImpLit(CLI::App* sub) {

@@ -39,7 +39,7 @@ class Pow2Range : public CLI::Validator {
     static_assert(IsPow2(min_val) && IsPow2(max_val) && max_val > min_val);
 
     if (validator_name.empty()) {
-      std::string out = " in [" + std::to_string(min_val) + " - " +
+      std::string out = "UINT in [" + std::to_string(min_val) + " - " +
                         std::to_string(max_val) + "]";
       description(out);
     }
@@ -76,7 +76,7 @@ class EnumTransformer : public CLI::CheckedTransformer {
   template <typename T>
   explicit EnumTransformer(T mapping) : CheckedTransformer(mapping) {
     desc_function_ = [mapping]() {
-      std::string out("value in ");
+      std::string out("VALUE in ");
       out += CLI::detail::generate_map(CLI::detail::smart_deref(mapping), true);
       return out;
     };

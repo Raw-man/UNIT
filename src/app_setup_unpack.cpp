@@ -83,7 +83,7 @@ void App::SetUpSubcmdUnpack() {
                                                                 {"plugin", UnpackOpt::Naming::kPlugin},
                                                                 {"old_plugin", UnpackOpt::Naming::kOldPlugin}};
 
-  sub->add_option("--naming", unp_opt.naming, "Set file names when unpacking .bin/.dig")
+  sub->add_option("--naming", unp_opt.naming, "Set file names when unpacking primary .BIN archives")
       ->transform(EnumTransformer(naming))
       ->capture_default_str();
 
