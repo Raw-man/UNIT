@@ -87,7 +87,7 @@ void App::SetLogLevel(App::LogType level) {
   log_lvl = level;
 }
 
-void App::Log(const std::string& msg, App::LogType type) {
+void App::Log(std::string_view msg, App::LogType type) {
   if (!IsLogLevelEnabled(type)) return;
 
   std::scoped_lock l(mut_cout);
@@ -112,12 +112,12 @@ void App::Log(const std::string& msg, App::LogType type) {
   }
 }
 
-void App::LogDebug(const std::string& msg) { App::Log(msg, LogType::kDebug); }
+void App::LogDebug(std::string_view msg) { App::Log(msg, LogType::kDebug); }
 
-void App::LogInfo(const std::string& msg) { App::Log(msg, LogType::kInfo); }
+void App::LogInfo(std::string_view msg) { App::Log(msg, LogType::kInfo); }
 
-void App::LogWarn(const std::string& msg) { App::Log(msg, LogType::kWarn); }
+void App::LogWarn(std::string_view msg) { App::Log(msg, LogType::kWarn); }
 
-void App::LogError(const std::string& msg) { App::Log(msg, LogType::kError); }
+void App::LogError(std::string_view msg) { App::Log(msg, LogType::kError); }
 
 }  // namespace unit

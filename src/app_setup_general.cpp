@@ -90,7 +90,7 @@ void App::SetUpGeneral() {
 
   this->fallthrough(true);
 
-  nnl::SetGlobalLogCB([](const std::string &msg, nnl::LogLevel lvl) {
+  nnl::SetGlobalLogCB([](const std::string_view msg, nnl::LogLevel lvl) {
     switch (lvl) {
       case nnl::LogLevel::kWarn:
         UNIT_LOG_WARN(msg);

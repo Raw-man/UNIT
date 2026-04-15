@@ -31,15 +31,15 @@ class App : private CLI::App {
     kError,
   };
 
-  void Log(const std::string& msg, App::LogType type);
+  void Log(std::string_view msg, App::LogType type);
 
-  void LogDebug(const std::string& msg);
+  void LogDebug(std::string_view msg);
 
-  void LogInfo(const std::string& msg);
+  void LogInfo(std::string_view msg);
 
-  void LogWarn(const std::string& msg);
+  void LogWarn(std::string_view msg);
 
-  void LogError(const std::string& msg);
+  void LogError(std::string_view msg);
 
   void SetLogLevel(App::LogType level);
 
