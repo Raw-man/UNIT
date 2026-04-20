@@ -18,6 +18,16 @@ if(NOT GIT_COMMIT_HASH)
 endif()
 
 include(FetchContent)
+include(CheckIPOSupported)
+include(CheckCXXCompilerFlag)
+
+check_ipo_supported(RESULT LTO_SUPPORTED OUTPUT lto_error)
+
+if(LTO_SUPPORTED)
+    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_RELEASE TRUE)
+else()
+    message(STATUS "IPO/LTO not supported: ${lto_error}")
+endif()
 
 set(BUILD_SHARED_LIBS OFF)
 set(NNL_ENABLE_LOGGING ON)
