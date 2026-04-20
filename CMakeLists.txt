@@ -19,7 +19,6 @@ endif()
 
 include(FetchContent)
 include(CheckIPOSupported)
-include(CheckCXXCompilerFlag)
 
 check_ipo_supported(RESULT LTO_SUPPORTED OUTPUT lto_error)
 
@@ -27,6 +26,10 @@ if(LTO_SUPPORTED)
     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_RELEASE TRUE)
 else()
     message(STATUS "IPO/LTO not supported: ${lto_error}")
+endif()
+
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+   add_compile_options(-march=x86-64-v2)
 endif()
 
 set(BUILD_SHARED_LIBS OFF)
