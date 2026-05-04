@@ -29,6 +29,8 @@ unit imp --help
 unit imp mdl --help
 ```
 
+For more details on the workflow and features, see the ![Wiki](https://github.com/Raw-man/UNIT/wiki).
+
 ## Building
 
 Ensure you have the following installed:
