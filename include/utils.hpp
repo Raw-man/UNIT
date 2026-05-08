@@ -8,17 +8,6 @@
 #include <vector>
 
 
-#ifdef linux
-#include <unistd.h>
-#endif
-
-#ifdef _WIN32
-#include <windows.h>
-#include <KnownFolders.h>
-#include <Shlobj.h>
-#include <initguid.h>
-#endif
-
 #include "NNL/common/io.hpp"
 #include "exception.hpp" // IWYU pragma: export
 

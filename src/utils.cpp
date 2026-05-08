@@ -1,6 +1,19 @@
 
 #include "utils.hpp"
 
+#ifdef linux
+#include <unistd.h>
+#endif
+
+#ifdef _WIN32
+// clang-format off
+#include <windows.h>
+#include <initguid.h>
+#include <KnownFolders.h>
+#include <Shlobj.h>
+// clang-format on
+#endif
+
 #include <fstream>
 #include <set>
 

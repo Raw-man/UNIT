@@ -4,11 +4,6 @@
 
 #include "rang.hpp"
 
-#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
-#define NNL_WINDOWS
-#include "Windows.h"
-#endif
-
 namespace unit {
 std::mutex mut_cout;
 

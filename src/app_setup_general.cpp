@@ -6,6 +6,10 @@
 #include "utils.hpp"
 #include "validators.hpp"
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 namespace unit {
 
 void App::SetUpGeneral() {
