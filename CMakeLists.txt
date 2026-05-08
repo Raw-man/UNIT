@@ -28,9 +28,13 @@ else()
     message(STATUS "IPO/LTO not supported: ${lto_error}")
 endif()
 
-if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-   add_compile_options(-march=x86-64-v2)
+
+if(CMAKE_SYSTEM_PROCESSOR MATCHES "(x86_64|AMD64|amd64)")
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+        add_compile_options(-march=x86-64-v2)
+    endif()
 endif()
+
 
 set(BUILD_SHARED_LIBS OFF)
 set(NNL_ENABLE_LOGGING ON)
