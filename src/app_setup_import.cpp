@@ -575,7 +575,7 @@ void App::SetUpSubcmdImpText(CLI::App* sub) {
 
   sub_txt->alias("text");
 
-  sub_txt->usage("\nA patch is required to use bitmaps with width > 128");
+  sub_txt->usage(u8"Note: Individual string entries are placed in the angle quotes \u00ab \u00bb\n");
 
   sub_txt->callback([this, sub_txt]() {
     if (this->print_config) this->LogInfo("\n\n" + sub_txt->config_to_str(true));
@@ -646,7 +646,9 @@ void App::SetUpSubcmdImpText(CLI::App* sub) {
       ->check(CLI::Range(0.01f, 10.0f))
       ->capture_default_str();
 
-  bitmap_group->add_option("--quality", imp_opt.quality, "The width and height of the bitmap")
+  bitmap_group
+      ->add_option("--quality", imp_opt.quality,
+                   "The width and height of the bitmap. Values > 128 require a game patch")
       ->check(Pow2Range<128, 1024>())
       ->capture_default_str();
 
