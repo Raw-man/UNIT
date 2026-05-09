@@ -455,8 +455,7 @@ void App::SetUpSubcmdImpImg(CLI::App* sub) {
   sub_ui
       ->add_option("-b,--base,base", imp_opt.base_path,
                    "An input path to the original texture container. Replacing a "
-                   "texture "
-                   "with 0-byte files allows to keep the original texture unchanged")
+                   "texture with 0-byte files allows to keep the original texture unchanged")
       ->transform(NormalizePath)
       ->check(CLI::ExistingFile);
 
@@ -575,7 +574,10 @@ void App::SetUpSubcmdImpText(CLI::App* sub) {
 
   sub_txt->alias("text");
 
-  sub_txt->usage(u8"Note: Individual string entries are placed in the angle quotes \u00ab \u00bb\n");
+  sub_txt->usage(
+      u8"\nNote: Individual string entries must be placed in \u00ab \u00bb"
+      u8"\nSpecial codes like {RED}, {TRIANGLE}, or {VAR0} are supported inside."
+      u8"\nEverything outside of the angle quotes is ignored.");
 
   sub_txt->callback([this, sub_txt]() {
     if (this->print_config) this->LogInfo("\n\n" + sub_txt->config_to_str(true));
