@@ -52,6 +52,12 @@ FetchContent_Declare(
 )
 
 FetchContent_Declare(
+    pugixml
+    GIT_REPOSITORY https://github.com/zeux/pugixml.git
+    GIT_TAG        0595296e917b4700de493d1eb60bb492f4ba52c3
+)
+
+FetchContent_Declare(
     CLI11
     GIT_REPOSITORY https://github.com/CLIUtils/CLI11.git
     GIT_TAG        08e0f7b2da3c27f76ebb0a92f1862e15070267cd
@@ -79,7 +85,7 @@ FetchContent_Declare(
     GIT_TAG        2ccde9568cca73c7b32c97fefca2e418c16ae5e3
 )
 
-FetchContent_MakeAvailable(NNL CLI11 RANG sndfile samplerate)
+FetchContent_MakeAvailable(NNL CLI11 RANG pugixml sndfile samplerate)
 
 add_library(agauniyal::rang ALIAS rang)
 
@@ -154,4 +160,4 @@ add_executable(unit
       ${Sources}
 )
 
-target_link_libraries(unit PUBLIC Threads::Threads NNL::NNL CLI11::CLI11 agauniyal::rang SndFile::sndfile SampleRate::samplerate)
+target_link_libraries(unit PUBLIC Threads::Threads NNL::NNL CLI11::CLI11 agauniyal::rang pugixml::static SndFile::sndfile SampleRate::samplerate)
