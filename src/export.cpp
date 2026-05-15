@@ -14,8 +14,8 @@ bool Export(const ExportOptions& opt, bool exp_to_dir) {
     return false;
   }
 
-  if (asset_type == format::kATRAC3 || asset_type == format::kPlainText) {
-    UNIT_LOG_DEBUG("skipped: " + opt.input_path.u8string());
+  if (asset_type >= format::kStartOfGeneralFormats) {
+    UNIT_LOG_DEBUG("skipping a general asset format: " + opt.input_path.u8string());
     return false;
   }
 
