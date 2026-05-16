@@ -568,16 +568,15 @@ void App::SetUpSubcmdImpDis(CLI::App* sub) {
 }
 
 void App::SetUpSubcmdImpText(CLI::App* sub) {
-  auto* sub_txt = sub->add_subcommand("txt", "Import text");
+  auto* sub_txt = sub->add_subcommand("txt", "Import text strings");
 
   sub_txt->fallthrough();
 
   sub_txt->alias("text");
 
   sub_txt->usage(
-      u8"\nNote: Individual string entries must be placed in \u00ab \u00bb"
-      u8"\nSpecial codes like {RED}, {TRIANGLE}, or {VAR0} are supported inside."
-      u8"\nEverything outside of the angle quotes is ignored.");
+      "\nThe command expects an .xlf file that contains original or translated text units.\n"
+      "Poedit is recommended for managing them.");
 
   sub_txt->callback([this, sub_txt]() {
     if (this->print_config) this->LogInfo("\n\n" + sub_txt->config_to_str(true));
@@ -587,7 +586,7 @@ void App::SetUpSubcmdImpText(CLI::App* sub) {
 
   auto& imp_opt = this->imp_txt_opt;
 
-  sub_txt->add_option("-i,--input,input", imp_opt.input_path, "An input path to a .txt file ")
+  sub_txt->add_option("-i,--input,input", imp_opt.input_path, "An input path to an .xlf file ")
       ->required(true)
       ->transform(NormalizePath)
       ->check(CLI::ExistingFile);
@@ -599,8 +598,8 @@ void App::SetUpSubcmdImpText(CLI::App* sub) {
 
   sub_txt
       ->add_option("-t,-b,--typeface,--base,typeface", imp_opt.typeface_paths,
-                   "An input path or paths to .ttf fonts (font family) that have glyphs "
-                   "for the language of your choice\n"
+                   "An input path or paths to .ttf/.otf fonts (font family) that have glyphs "
+                   "for the target language\n"
                    "You can also specify the path to "
                    "the original game text archive to use the original bitmap font")
       ->required(true)
@@ -617,19 +616,18 @@ void App::SetUpSubcmdImpText(CLI::App* sub) {
       ->transform(EnumTransformer(mapping))
       ->capture_default_str();
 
-  auto text_group = sub_txt->add_option_group("TEXT", "");
-
   auto bitmap_group = sub_txt->add_option_group("FONT", "");
 
   auto texture_group = sub_txt->add_option_group("TEXTURE", "");
 
-  text_group
+  bitmap_group
       ->add_flag("--kerning,!--no-kerning", imp_opt.kerning,
                  "Simulate kerning. This adjusts the spacing between pairs of "
-                 "some characters")
+                 "some characters to improve visual layout, but it may greatly "
+                 "increase the file size.")
       ->default_val(false);
 
-  text_group->add_option("--spacing", imp_opt.tracking_offset, "A value added to space between glyphs")
+  bitmap_group->add_option("--spacing", imp_opt.tracking_offset, "A value added to space between glyphs")
       ->check(CLI::Range(-127, 127))
       ->capture_default_str();
 
