@@ -13,6 +13,7 @@ void ToXMLNode(pugi::xml_node& unit, const text::Text& text, std::size_t str_id)
   pugi::xml_node segment = unit.append_child("segment");
   pugi::xml_node source = segment.append_child("source");
 
+  segment.append_attribute("canResegment") = "no";
   source.append_attribute("xml:space") = "preserve";
 
   auto& str = text.strings.at(str_id);
