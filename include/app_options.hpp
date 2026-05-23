@@ -13,6 +13,9 @@ struct ExportOptions {
   bool visibility = false;
   bool pack_textures = false;
   bool mipmaps = false;
+
+  std::string src_lang = "und";
+  std::string trg_lang = "";
 };
 
 struct ImportMdlOpt {

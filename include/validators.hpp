@@ -3,6 +3,7 @@
 #include <CLI/CLI.hpp>
 #include <filesystem>
 #include <string>
+#include "NNL/utility/string.hpp"
 
 namespace unit {
 
@@ -102,6 +103,47 @@ struct ValidHexValidator : public CLI::Validator {
 };
 
 const static ValidHexValidator ValidHex;
+
+struct ValidBCP47Validator : public CLI::Validator {
+  ValidBCP47Validator() : Validator("BCP47") {
+    name_ = "IsBCP47Tag";
+    func_ = [](const std::string& str) {
+
+      auto parts = nnl::utl::string::Split(str, "-");
+
+      if (parts.empty() || parts.size() > 2) return std::string("BCP47: invalid structure");
+
+      const std::string& lang = parts[0];
+
+      if (lang.size() < 2 || lang.size() > 3) return std::string("BCP47: invalid language code length");
+
+      for (char c : lang) {
+        if (!std::isalpha(static_cast<unsigned char>(c))) return std::string("BCP47: language must be alphabetical");
+      }
+
+      if (parts.size() == 2) {
+        const std::string& region = parts[1];
+        size_t r_len = region.size();
+
+        bool all_letters = true;
+        bool all_digits = true;
+        for (char c : region) {
+          if (!std::isalpha(static_cast<unsigned char>(c))) all_letters = false;
+          if (!std::isdigit(static_cast<unsigned char>(c))) all_digits = false;
+        }
+
+        if (!((all_letters && r_len == 2) || (all_digits && r_len == 3))) {
+          return std::string("BCP47: region must be 2 letters or 3 digits");
+        }
+      }
+
+      return std::string();
+
+    };
+  }
+};
+
+const static ValidBCP47Validator ValidBCP47;
 
 inline const auto NormalizePath = [](const std::string& str) -> std::string {
   auto full_path = std::filesystem::u8path(str);

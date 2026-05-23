@@ -4,6 +4,7 @@
 #include "export.hpp"
 #include "logger.hpp"
 #include "utils.hpp"
+#include "validators.hpp"
 
 namespace unit {
 
@@ -78,8 +79,9 @@ void ToXMLNode(pugi::xml_node& unit, const text::Text& text, std::size_t str_id)
   };
 }
 
-void SerializeAsXLIFF(const text::Text& text, const std::filesystem::path& out) {
+void SerializeAsXLIFF(const text::Text& text, const ExportOptions& opt) {
   pugi::xml_document doc;
+  auto out = utl::ReplaceExtensionFront(opt.output_path, fs::u8path(".xlf"));
 
   pugi::xml_node decl = doc.prepend_child(pugi::node_declaration);
   decl.append_attribute("version") = "1.0";
@@ -88,7 +90,9 @@ void SerializeAsXLIFF(const text::Text& text, const std::filesystem::path& out) 
   pugi::xml_node xliff = doc.append_child("xliff");
   xliff.append_attribute("xmlns") = "urn:oasis:names:tc:xliff:document:2.0";
   xliff.append_attribute("version") = "2.1";
-  xliff.append_attribute("srcLang") = "und";
+  xliff.append_attribute("srcLang") = opt.src_lang;
+
+  if (!opt.trg_lang.empty()) xliff.append_attribute("trgLang") = opt.trg_lang;
 
   pugi::xml_node file = xliff.append_child("file");
   file.append_attribute("id") = out.stem().u8string();
@@ -112,7 +116,7 @@ bool ExportDialog(const asset::AssetView& asset_container, const ExportOptions& 
 
   auto stextures = texture::Convert(textures);
 
-  SerializeAsXLIFF(text, utl::ReplaceExtensionFront(options.output_path, fs::u8path(".xlf")));
+  SerializeAsXLIFF(text, options);
 
   auto parent_path = options.output_path.parent_path();
 

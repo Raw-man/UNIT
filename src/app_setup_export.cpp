@@ -115,6 +115,16 @@ void App::SetUpSubcmdExport() {
 
   texture_group->add_flag("--mipmaps,!--no-mipmaps", exp_opt.mipmaps, "Export mipmaps")->default_val(false);
 
+  auto text_group = sub->add_option_group("TEXT");
+
+  text_group->add_option("--src-lang", exp_opt.src_lang, "Set the source language in .xlf files")
+      ->check(ValidBCP47)
+      ->capture_default_str();
+
+  text_group->add_option("--trg-lang", exp_opt.trg_lang, "Set the target language in .xlf files")
+      ->check(ValidBCP47)
+      ->capture_default_str();
+
   sub->fallthrough(true);
 
   // block propagation
