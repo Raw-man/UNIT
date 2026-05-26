@@ -32,24 +32,22 @@ void App::RunSubcmdPackDig() {
 }
 
 void App::SetUpSubcmdPackDig(CLI::App* pack) {
-  auto* sub = pack->add_subcommand("cfcdig", "Pack the main data archive (.BIN file)");
+  auto* sub = pack->add_subcommand("cfcdig", "Pack a primary data archive (a *.BIN file)");
   sub->alias("dig");
   sub->alias("bin");
   sub->fallthrough(true);
 
   sub->usage(
-      "This container represents the main (or one of the main) game archives "
-      "(*.BIN or CFC.DIG files) that store all assets. Note: ANY changes to "
-      "them may BREAK the games. In NSUNI, the archives are encrypted (and "
-      "stored in a .PGD container). Integrity checks are performed on their "
-      "entries using MD5 hashes (from .md5 files) "
+      "This container represents a primary game data archive (a *.BIN or a *.DIG file).\n"
+      "Note: ANY changes to it may BREAK the games.\n"
+      "In NSUNI, the archives are encrypted (and "
+      "stored in a PGD container).\n"
+      "Integrity checks are performed on their "
+      "entries using MD5 hashes.\n"
       "The general structure of those entries is fixed and should be "
-      "preserved. Archives that store the game's audio are "
-      "expected to be at certain fixed LBA positions in the .iso file. "
-      "In general, the games "
-      "may expect files not to exceed certain fixed sizes. Some of these "
-      "issues can be avoided by patching the game's executable. See "
-      "https://bit.ly/NSUNI2020_7Z");
+      "preserved.\n"
+      "For further details, see "
+      "https://github.com/Raw-man/UNIT/wiki/Repacking");
 
   auto& pac_opt = this->pac_opt;
   sub->add_option("-i,--input,input", pac_opt.input_path, "An input path to a folder with files to pack")
@@ -72,15 +70,13 @@ void App::SetUpSubcmdPackDig(CLI::App* pack) {
 }
 
 void App::SetUpSubcmdPackDigEntry(CLI::App* pack) {
-  auto* sub = pack->add_subcommand("entry", "Pack an entry of the main game archive");
+  auto* sub = pack->add_subcommand("entry", "Pack an entry of a primary data archive");
   sub->alias("ent");
   sub->fallthrough(true);
 
   sub->usage(
-      "This container is an entry in the main game archive that often "
-      "stores multiple related assets. Note: careless "
-      "changes may "
-      "result in crashes.");
+      "This container represents an entry in a *.BIN archive.\n"
+      "Note: careless changes may result in crashes.");
 
   auto& pac_opt = this->pac_opt;
   sub->add_option("-i,--input,input", pac_opt.input_path, "An input path to a folder with files to pack")
@@ -99,15 +95,14 @@ void App::SetUpSubcmdPackDigEntry(CLI::App* pack) {
 }
 
 void App::SetUpSubcmdPackCollection(CLI::App* pack) {
-  auto* sub = pack->add_subcommand("collection", "Pack a collection of similar assets.");
+  auto* sub = pack->add_subcommand("collection", "Pack a collection of similar assets");
   sub->alias("col");
   sub->fallthrough(true);
 
   sub->usage(
-      "This container often holds multiple related but distinct assets (for "
-      "instance, a main 3d map and additional 3d props). Note: careless "
-      "changes may "
-      "result in crashes.");
+      "This container typically holds multiple related but distinct assets (for "
+      "instance, a main 3D map and its 3D props).\n"
+      "Note: careless changes may result in crashes.");
 
   auto& pac_opt = this->pac_opt;
   sub->add_option("-i,--input,input", pac_opt.input_path, "An input path to a folder with files to pack")
@@ -126,15 +121,15 @@ void App::SetUpSubcmdPackCollection(CLI::App* pack) {
 }
 
 void App::SetUpSubcmdPackAsset(CLI::App* pack) {
-  auto* sub = pack->add_subcommand("asset", "Pack parts of a complete asset");
+  auto* sub = pack->add_subcommand("asset", "Pack parts of a single asset");
   sub->alias("ast");
 
   sub->usage(
-      "An asset container holds closely related components of a complete asset "
-      "(for instance, textures and meshes of a 3d model). Note: these parts "
-      "often "
-      "reference each other or may be required by the game to function "
-      "properly. Careless changes may result in crashes.");
+      "This container typically holds closely related components of a complete asset "
+      "(e.g., textures and meshes of a 3D model).\n"
+      "Note: these parts typically reference each other and may be required by the game to function "
+      "properly.\n"
+      "Careless changes may result in crashes.");
 
   sub->fallthrough(true);
   auto& pac_opt = this->pac_opt;
@@ -165,9 +160,10 @@ CLI::App* App::SetUpSubcmdPack() {
   sub->usage(
       "\nunit pac <SUBCOMMAND> <INPUT> <OUTPUT> [OPTIONS]\n\n"
       "Note: numeric prefixes in the names of archive entries must be "
-      "preserved. Any careless changes to those entries may result in "
-      "crashes. Repacking without any changes may not always create an "
-      "identical archive.\n"
+      "preserved.\n"
+      "Any careless changes to those entries may result in "
+      "crashes.\n"
+      "Even without changes, a repacked archive may not always be byte-identical.\n"
       "Use --help with a subcommand for more details");
 
   sub->add_flag("--recursive,!--no-recursive", pac_opt.recursive,
