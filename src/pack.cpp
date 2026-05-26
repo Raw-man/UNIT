@@ -15,28 +15,31 @@ nnl::Buffer PackRecursively(const fs::path& conf_path) {
   bool recursive = false;
   for (const auto& item : items) {
     // get command and subcommand e.g. [pac.ast]
-    if (item.name == "++" && item.parents.size() >= 2 && (item.parents[0] == "pac" || item.parents[0] == "pack")) {
+
+    bool is_pac_cmd = item.parents.size() >= 2 && (item.parents[0] == "pac" || item.parents[0] == "pack");
+
+    if (item.name == "++" && is_pac_cmd) {
       cmd = item.parents[1];
     }
     // get the input option and its value (the dir path)
-    if (item.name == "input" && !item.inputs.empty() && !item.parents.empty() &&
-        (item.parents[0] == "pac" || item.parents[0] == "pack"))
+    if (item.name == "input" && !item.inputs.empty() && is_pac_cmd) {
       input_path = fs::u8path(item.inputs[0]);
-
-    if (item.name == "recursive" && !item.inputs.empty() && !item.parents.empty() &&
-        (item.parents[0] == "pac" || item.parents[0] == "pack"))
-      recursive = (item.inputs[0] == "1" || item.inputs[0] == "true");
-  }
-
-  if (!input_path.empty() && !cmd.empty() && fs::is_directory(input_path)) {
-    PackOpt sub_opt;
-    sub_opt.recursive = recursive;
-
-    if (input_path.is_relative()) {
-      input_path = conf_path.parent_path() / input_path;
     }
 
-    input_path = input_path.lexically_normal();
+    if (item.name == "recursive" && !item.inputs.empty() && is_pac_cmd) {
+      recursive = (item.inputs[0] == "1" || item.inputs[0] == "true");
+    }
+  }
+
+  if (!input_path.empty() && input_path.is_relative()) {
+    input_path = conf_path.parent_path() / input_path;
+  }
+
+  input_path = input_path.lexically_normal();
+
+  if (!input_path.empty() && fs::is_directory(input_path) && !cmd.empty()) {
+    PackOpt sub_opt;
+    sub_opt.recursive = recursive;
 
     sub_opt.input_path = input_path;
     if (cmd == "ast" || cmd == "asset") {
