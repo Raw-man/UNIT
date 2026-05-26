@@ -158,8 +158,6 @@ bool Export(const ExportOptions& opt, bool exp_to_dir) {
   }
 
   if (asset_type == format::kText) {
-    UNIT_LOG_WARN("a text archive is outside of an asset container: " + opt.input_path.u8string());
-
     auto text = text::Import(bin_asset);
 
     return ExportDialogPartial(text, opt);
