@@ -4,7 +4,6 @@
 #include "export.hpp"
 #include "logger.hpp"
 #include "utils.hpp"
-#include "validators.hpp"
 
 namespace unit {
 
@@ -110,9 +109,9 @@ void SerializeAsXLIFF(const text::Text& text, const ExportOptions& opt) {
 }
 
 bool ExportDialog(const asset::AssetView& asset_container, const ExportOptions& options) {
-  auto text = text::Import(asset_container.at(2));
+  auto text = text::Import(asset_container.at(asset::BitmapText::kText));
 
-  auto textures = texture::Import(asset_container.at(0));
+  auto textures = texture::Import(asset_container.at(asset::BitmapText::kTextureContainer));
 
   auto stextures = texture::Convert(textures);
 
@@ -123,6 +122,12 @@ bool ExportDialog(const asset::AssetView& asset_container, const ExportOptions& 
   for (STexture& stexture : stextures) {
     stexture.ExportPNG(parent_path / fs::u8path(stexture.name), false);
   }
+
+  return true;
+}
+
+bool ExportDialogPartial(const text::Text& text, const ExportOptions& options) {
+  SerializeAsXLIFF(text, options);
 
   return true;
 }

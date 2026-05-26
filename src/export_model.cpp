@@ -125,4 +125,35 @@ bool ExportModelContainer(const asset::AssetView& asset_container, const ExportO
   return true;
 }
 
+bool ExportModelPartial(const model::Model& model, const ExportOptions& options) {
+  SAsset3D sasset;
+
+  sasset.model = model::Convert(model);
+
+  sasset.ExportGLB(utl::ReplaceExtensionFront(options.output_path, fs::u8path(".glb")), options.flip,
+                   options.pack_textures);
+
+  return true;
+}
+
+bool ExportShadowCollisionPartial(const shadow_collision::Collision& collision, const ExportOptions& options) {
+  SAsset3D sasset;
+
+  sasset.model = shadow_collision::Convert(collision);
+
+  sasset.ExportGLB(utl::ReplaceExtensionFront(options.output_path, fs::u8path(".glb")), options.flip);
+
+  return true;
+}
+
+bool ExportCollisionPartial(const collision::Collision& collision, const ExportOptions& options) {
+  SAsset3D sasset;
+
+  sasset.model = collision::Convert(collision);
+
+  sasset.ExportGLB(utl::ReplaceExtensionFront(options.output_path, fs::u8path(".glb")), options.flip);
+
+  return true;
+}
+
 }  // namespace unit

@@ -123,12 +123,8 @@ src/app_setup_detect.cpp
 
 src/export.cpp
 src/export_model.cpp
-src/export_model_partial.cpp
 src/export_minimap.cpp
-src/export_collision_partial.cpp
-src/export_shadow_collision_partial.cpp
 src/export_dialog.cpp
-src/export_dialog_partial.cpp
 src/export_texture.cpp
 src/export_posd.cpp
 src/export_lit.cpp
