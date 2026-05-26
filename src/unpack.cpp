@@ -5,7 +5,7 @@
 #include "utils.hpp"
 namespace unit {
 
-std::string md5str(const std::array<u8, 16> md5sum) {
+std::string MD5ToStr(const std::array<u8, 16> md5sum) {
   std::string res;
   res.reserve(32);
 
@@ -16,7 +16,8 @@ std::string md5str(const std::array<u8, 16> md5sum) {
   return res;
 }
 
-std::string hash_single(BufferView buffer, format::FileFormat type, u32 id) {
+// Generate hashes used by the plugins
+std::string HashAsset(BufferView buffer, format::FileFormat type, u32 id) {
   buffer.Seek(0);
   nnl::utl::data::MD5Context ctx;
 
@@ -41,7 +42,7 @@ std::string hash_single(BufferView buffer, format::FileFormat type, u32 id) {
   } else if (type == format::kATRAC3) {
     auto nsuni = nnl::utl::data::MD5(buffer.SubView(0, 0x70));
     auto nslar = nnl::utl::data::MD5(buffer.SubView(0, 0x100));
-    return md5str(nsuni) + "_" + md5str(nslar);
+    return MD5ToStr(nsuni) + "_" + MD5ToStr(nslar);
   } else if (type == format::kTextureContainer) {
     buffer.Seek(0);
     auto header = buffer.ReadLE<texture::raw::RHeader>();
@@ -57,17 +58,18 @@ std::string hash_single(BufferView buffer, format::FileFormat type, u32 id) {
     if (buffer.size() < size) return "";
 
     ctx.Update(buffer.SubView(0, size));
-    return md5str(ctx.Final());
+    return MD5ToStr(ctx.Final());
   } else {
     return "";
   }
 
   if (dig_ent_ind != u16(-1)) ctx.Update({&id, 4});
 
-  return md5str(ctx.Final());
+  return MD5ToStr(ctx.Final());
 }
 
-std::string hash_asset(BufferView buffer, asset::Category type, u32 id) {
+// Generate hashes used by the plugins
+std::string HashContainer(BufferView buffer, asset::Category type, u32 id) {
   if (id == u32(-1)) return "";
 
   buffer.Seek(0);
@@ -85,30 +87,30 @@ std::string hash_asset(BufferView buffer, asset::Category type, u32 id) {
     ctx.Update(buffer.SubView(0, size));
   } else if (type == asset::Category::kSoundBank) {
     ctx.Update(buffer.SubView(0, size));
-    return md5str(ctx.Final());
+    return MD5ToStr(ctx.Final());
   } else {
     return "";
   }
 
   if (dig_ent_ind != u16(-1)) ctx.Update({&id, 4});
 
-  return md5str(ctx.Final());
+  return MD5ToStr(ctx.Final());
 }
 
 void AppendHash(std::string& output_path, BufferView buffer, format::FileFormat type, u32 id) {
-  std::string hash = hash_single(buffer, type, id);
+  std::string hash = HashAsset(buffer, type, id);
 
   if (!hash.empty()) output_path = "_" + hash + output_path;
 }
 
 void AppendHash(std::string& output_path, BufferView buffer, asset::Category type, u32 id) {
-  std::string hash = hash_asset(buffer, type, id);
+  std::string hash = HashContainer(buffer, type, id);
   if (!hash.empty()) output_path = "_" + hash + output_path;
 }
 
-void AppendExtension(std::string& name, format::FileFormat type) { name += GetExtension(type); }
+void AppendMainExtension(std::string& file_name, format::FileFormat type) { file_name += GetExtension(type); }
 
-void AppendCategoryExtension(std::string& name, asset::Category type) { name += GetCatExtension(type); }
+void AppendCategoryExtension(std::string& file_name, asset::Category type) { file_name += GetCatExtension(type); }
 
 void GenerateConfig(std::string cmd, const fs::path& input_path) {
   std::string toml = "[pac." + cmd + "]\n" +
@@ -120,29 +122,36 @@ void GenerateConfig(std::string cmd, const fs::path& input_path) {
   utl::SaveFile(new_path, toml);
 }
 
-bool RecursiveUnpack(format::FileFormat type, BufferView data, const fs::path& output_path, int recursive, u32 id);
+struct FormatInfo {
+  format::FileFormat type{};
+  asset::Category category{};
+};
+
+bool RecursiveUnpack(FormatInfo fmt_inf, BufferView data, const fs::path& output_path, int recursive, u32 id);
 
 void ProcessEntry(std::string name, BufferView view, const std::filesystem::path& output_path, int recursive, u32 id) {
   std::string output_name;
 
-  auto subtype = format::Detect(view);
+  FormatInfo fmt_inf;
+
+  fmt_inf.type = format::Detect(view);
 
 #ifndef NDEBUG
   {
-    auto subtypes = format::DetectAll(view);
-    assert(subtypes.empty() || subtypes.size() == 1);  // ideally, only 1 type should be detected
+    auto types = format::DetectAll(view);
+    assert(types.empty() || types.size() == 1);  // ideally, only 1 type should be detected
   }
 #endif
 
-  AppendExtension(output_name, subtype);
+  AppendMainExtension(output_name, fmt_inf.type);
 
-  AppendHash(output_name, view, subtype, id);
+  AppendHash(output_name, view, fmt_inf.type, id);
 
-  if (subtype == format::kAssetContainer) {
+  if (fmt_inf.type == format::kAssetContainer) {
     auto asset_view = asset::ImportView(view);
-    auto cat = asset::Categorize(asset_view);
-    AppendCategoryExtension(output_name, cat);
-    AppendHash(output_name, view, cat, id);
+    fmt_inf.category = asset::Categorize(asset_view);
+    AppendCategoryExtension(output_name, fmt_inf.category);
+    AppendHash(output_name, view, fmt_inf.category, id);
   }
 
   output_name = name + output_name;
@@ -150,7 +159,7 @@ void ProcessEntry(std::string name, BufferView view, const std::filesystem::path
   auto output_path_entry = output_path / fs::u8path(output_name);
 
   if (recursive) {
-    RecursiveUnpack(subtype, view, output_path_entry, recursive, id);
+    RecursiveUnpack(fmt_inf, view, output_path_entry, recursive, id);
   } else {
     utl::SaveFile(output_path_entry, view);
   }
@@ -176,7 +185,7 @@ bool UnpackDig(BufferView data, const fs::path& output_path, int recursive, Unpa
 
     std::string name = std::to_string(i) + (rec.is_compressed ? "_comp" : "_nocomp");
 
-    u32 id = -1;  // no hash
+    u32 id = -1;  // an asset id used by the games: dig entry index + nested entry index
 
     switch (naming) {
       case UnpackOpt::kPlugin:
@@ -184,6 +193,7 @@ bool UnpackDig(BufferView data, const fs::path& output_path, int recursive, Unpa
         break;
       case UnpackOpt::kOldPlugin:
         id = 0xFFFF'0000;  // old plugin hash 0xFFFF'0000
+        break;
       default:
         break;
     }
@@ -252,15 +262,15 @@ bool UnpackAsset(BufferView data, const fs::path& output_path, int recursive, u3
   return true;
 }
 
-bool RecursiveUnpack(format::FileFormat type, BufferView data, const fs::path& output_path, int recursive, u32 id) {
-  if (type == format::FileFormat::kDigEntry) {
+bool RecursiveUnpack(FormatInfo fmt_inf, BufferView data, const fs::path& output_path, int recursive, u32 id) {
+  if (fmt_inf.type == format::FileFormat::kDigEntry) {
     UnpackDigEntry(data, output_path, recursive, id);
-  } else if (type == format::kCollection) {
+  } else if (fmt_inf.type == format::kCollection) {
     UnpackCollection(data, output_path, recursive, id);
-  } else if (type == format::kAssetContainer && !(asset::ImportView(data).empty()) && recursive > 1) {
+  } else if (fmt_inf.type == format::kAssetContainer && fmt_inf.category != asset::Category::kPlaceholder &&
+             (recursive > 1 || fmt_inf.category == asset::Category::kUIConfigTextureContainer)) {
     UnpackAsset(data, output_path, recursive, id);
   } else {
-    // save asset containers as is too
     utl::SaveFile(output_path, data);
   }
   return true;
