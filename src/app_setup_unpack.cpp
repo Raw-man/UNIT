@@ -32,7 +32,8 @@ void App::SetUpSubcmdUnpack() {
   sub->add_option("-o,--output,output", unp_opt.output_path, "An output path to the resulting folder")
       ->required()
       ->transform(NormalizePath)
-      ->check(ExistingParentPathDir);
+      ->check(ExistingParentPathDir)
+      ->check(CLI::NonexistentPath);
 
   std::vector<std::pair<std::string, UnpackOpt::Naming>> naming{{"default", UnpackOpt::Naming::kDefault},
                                                                 {"plugin", UnpackOpt::Naming::kPlugin},

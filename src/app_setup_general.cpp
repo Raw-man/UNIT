@@ -24,9 +24,11 @@ void App::SetUpGeneral() {
 
   formatter->label("TEXT:DIR", "PATH:DIR");
 
-  formatter->label("TEXT:PATH", "PATH: DIR or FILE");
+  formatter->label("TEXT:PATH", "PATH");
 
-  formatter->label("TEXT:PATH(existing)", "PATH: DIR or FILE");
+  formatter->label("TEXT:PATH(existing)", "PATH(existing)");
+
+  formatter->label("TEXT:DIR:PATH(non-existing)", "PATH:DIR(non-existing)");
 
   this->formatter(formatter);
 
