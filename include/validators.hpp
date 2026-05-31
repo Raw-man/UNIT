@@ -12,14 +12,15 @@ struct ExistingParentPathValidator : public CLI::Validator {
       : Validator(desc) {
     name_ = "ExistingParentPath";
     func_ = [](const std::string& str) {
+
+      if(str.empty()){
+        return std::string("Path is empty");
+      }
+
       std::filesystem::path p = std::filesystem::u8path(str).parent_path();
 
-        if (p.empty()) {
-            p = ".";
-        }
-
       if (!std::filesystem::is_directory(p))
-        return std::string("parent directory does not exist: " + p.u8string());
+        return std::string("Parent directory does not exist: " + p.u8string());
       else
         return std::string();
     };
@@ -57,7 +58,7 @@ class Pow2Range : public CLI::Validator {
           val *= 2;
         }
 
-        return std::string("allowed values: " + allowed);
+        return std::string("Allowed values: " + allowed);
       }
 
       else
@@ -146,6 +147,9 @@ struct ValidBCP47Validator : public CLI::Validator {
 const static ValidBCP47Validator ValidBCP47;
 
 inline const auto NormalizePath = [](const std::string& str) -> std::string {
+
+  if(str.empty()) return str;
+
   auto full_path = std::filesystem::u8path(str);
 
   full_path = full_path.lexically_normal();
