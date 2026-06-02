@@ -60,7 +60,7 @@ FetchContent_Declare(
 FetchContent_Declare(
     CLI11
     GIT_REPOSITORY https://github.com/CLIUtils/CLI11.git
-    GIT_TAG        08e0f7b2da3c27f76ebb0a92f1862e15070267cd
+    GIT_TAG        378c84da4b14adfa5083c18c948bdf17ba6d7ba1
 )
 
 FetchContent_Declare(
