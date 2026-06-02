@@ -104,10 +104,7 @@ void App::SetUpSubcmdImpMdl(CLI::App* sub) {
 
   sub_mdl->fallthrough();
 
-  sub_mdl->callback([this, sub_mdl]() {
-    if (this->print_config) this->LogInfo("\n\n" + sub_mdl->config_to_str(true));
-    this->RunSubcmdImpMdl();
-  });
+  sub_mdl->callback([this]() { this->RunSubcmdImpMdl(); });
 
   auto asset_group = sub_mdl->add_option_group("ASSET", "");
 
@@ -242,10 +239,7 @@ void App::SetUpSubcmdImpCam(CLI::App* sub) {
 
   sub_cam->fallthrough();
 
-  sub_cam->callback([this, sub_cam]() {
-    if (this->print_config) this->LogInfo("\n\n" + sub_cam->config_to_str(true));
-    this->RunSubcmdImpCam();
-  });
+  sub_cam->callback([this]() { this->RunSubcmdImpCam(); });
 
   auto& imp_opt = this->imp_cam_opt;
 
@@ -271,10 +265,7 @@ void App::SetUpSubcmdImpPos(CLI::App* sub) {
 
   sub_pos->alias("position");
 
-  sub_pos->callback([this, sub_pos]() {
-    if (this->print_config) this->LogInfo("\n\n" + sub_pos->config_to_str(true));
-    this->RunSubcmdImpPos();
-  });
+  sub_pos->callback([this]() { this->RunSubcmdImpPos(); });
 
   auto& imp_opt = this->imp_pos_opt;
 
@@ -320,10 +311,7 @@ void App::SetUpSubcmdImpMinimap(CLI::App* sub) {
 
   sub_min->alias("minimap");
 
-  sub_min->callback([this, sub_min]() {
-    if (this->print_config) this->LogInfo("\n\n" + sub_min->config_to_str(true));
-    this->RunSubcmdImpMinimap();
-  });
+  sub_min->callback([this]() { this->RunSubcmdImpMinimap(); });
 
   auto& imp_opt = this->imp_min_opt;
 
@@ -355,10 +343,7 @@ void App::SetUpSubcmdImpLit(CLI::App* sub) {
       "\nTo properly reimport lights toggle Punctual Lights and Custom "
       "Properties when exporting from Blender (4.4 is recommended)");
 
-  sub_lit->callback([this, sub_lit]() {
-    if (this->print_config) this->LogInfo("\n\n" + sub_lit->config_to_str(true));
-    this->RunSubcmdImpLit();
-  });
+  sub_lit->callback([this]() { this->RunSubcmdImpLit(); });
 
   auto& imp_opt = this->imp_lit_opt;
 
@@ -390,10 +375,7 @@ void App::SetUpSubcmdImpSnd(CLI::App* sub) {
 
   sub_snd->usage("Note: numeric prefixes in the names of files must be preserved");
 
-  sub_snd->callback([this, sub_snd]() {
-    if (this->print_config) this->LogInfo("\n\n" + sub_snd->config_to_str(true));
-    this->RunSubcmdImpSnd();
-  });
+  sub_snd->callback([this]() { this->RunSubcmdImpSnd(); });
 
   auto& imp_opt = this->imp_snd_opt;
 
@@ -435,10 +417,7 @@ void App::SetUpSubcmdImpImg(CLI::App* sub) {
       "\nNote: numeric prefixes in the names of files must be preserved. A "
       "patch is required to use upscaled ui textures (with the plugin).");
 
-  sub_ui->callback([this, sub_ui]() {
-    if (this->print_config) this->LogInfo("\n\n" + sub_ui->config_to_str(true));
-    this->RunSubcmdImpImg();
-  });
+  sub_ui->callback([this]() { this->RunSubcmdImpImg(); });
 
   auto& imp_opt = this->imp_img_opt;
 
@@ -473,11 +452,10 @@ void App::SetUpSubcmdImpFog(CLI::App* sub) {
 
   sub_fog->usage(" ");
 
-  sub_fog->callback([this, sub_fog]() {
+  sub_fog->callback([this]() {
     std::vector<CLI::ConfigItem> values = config_formatter_->from_file(imp_fog_opt.input_path.u8string());
     _parse_config(values);
 
-    if (this->print_config) this->LogInfo("\n\n" + sub_fog->config_to_str(true));
     this->RunSubcmdImpFog();
   });
 
@@ -512,11 +490,10 @@ void App::SetUpSubcmdImpDis(CLI::App* sub) {
 
   sub_dis->usage(" ");
 
-  sub_dis->callback([this, sub_dis]() {
+  sub_dis->callback([this]() {
     std::vector<CLI::ConfigItem> values = config_formatter_->from_file(imp_dis_opt.input_path.u8string());
     _parse_config(values);
 
-    if (this->print_config) this->LogInfo("\n\n" + sub_dis->config_to_str(true));
     this->RunSubcmdImpDis();
   });
 
@@ -578,11 +555,7 @@ void App::SetUpSubcmdImpText(CLI::App* sub) {
       "\nThe command expects an .xlf file that contains original or translated text units.\n"
       "Poedit is recommended for managing them.");
 
-  sub_txt->callback([this, sub_txt]() {
-    if (this->print_config) this->LogInfo("\n\n" + sub_txt->config_to_str(true));
-
-    this->RunSubcmdImpText();
-  });
+  sub_txt->callback([this]() { this->RunSubcmdImpText(); });
 
   auto& imp_opt = this->imp_txt_opt;
 

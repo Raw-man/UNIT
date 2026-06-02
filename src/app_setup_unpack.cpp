@@ -56,10 +56,7 @@ void App::SetUpSubcmdUnpack() {
       ->check([](const std::string& str) { return "The following argument was not expected: " + str; })
       ->configurable(false);
 
-  sub->callback([this, sub]() {
-    if (this->print_config) this->LogInfo("\n\n" + sub->config_to_str(true));
-    this->RunSubcmdUnpack();
-  });
+  sub->callback([this]() { this->RunSubcmdUnpack(); });
 }
 
 }  // namespace unit

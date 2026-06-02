@@ -48,6 +48,8 @@ class App : private CLI::App {
  private:
   App();
 
+  void pre_callback() override;
+
   void SetUpGeneral();
 
   void SetUpSubcmdExport();
@@ -143,6 +145,8 @@ class App : private CLI::App {
   void RunSubcmdLocHex();
 
   void RunSubcmdDetect();
+
+  void PrintConfig(const CLI::App* sub);
 
   bool print_config = false;
 

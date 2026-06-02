@@ -63,10 +63,7 @@ void App::SetUpSubcmdPackDig(CLI::App* pack) {
                 "Compress the archive entries if possible. Note: slows down loading")
       ->default_val(false);
 
-  sub->callback([this, sub]() {
-    if (this->print_config) this->LogInfo("\n\n" + sub->config_to_str(true));
-    this->RunSubcmdPackDig();
-  });
+  sub->callback([this]() { this->RunSubcmdPackDig(); });
 }
 
 void App::SetUpSubcmdPackDigEntry(CLI::App* pack) {
@@ -88,10 +85,7 @@ void App::SetUpSubcmdPackDigEntry(CLI::App* pack) {
       ->transform(NormalizePath)
       ->check(ExistingParentPathFile);
 
-  sub->callback([this, sub]() {
-    if (this->print_config) this->LogInfo("\n\n" + sub->config_to_str(true));
-    this->RunSubcmdPackDigEntry();
-  });
+  sub->callback([this]() { this->RunSubcmdPackDigEntry(); });
 }
 
 void App::SetUpSubcmdPackCollection(CLI::App* pack) {
@@ -114,10 +108,7 @@ void App::SetUpSubcmdPackCollection(CLI::App* pack) {
       ->transform(NormalizePath)
       ->check(ExistingParentPathFile);
 
-  sub->callback([this, sub]() {
-    if (this->print_config) this->LogInfo("\n\n" + sub->config_to_str(true));
-    this->RunSubcmdPackCollection();
-  });
+  sub->callback([this]() { this->RunSubcmdPackCollection(); });
 }
 
 void App::SetUpSubcmdPackAsset(CLI::App* pack) {
@@ -142,10 +133,7 @@ void App::SetUpSubcmdPackAsset(CLI::App* pack) {
       ->transform(NormalizePath)
       ->check(ExistingParentPathFile);
 
-  sub->callback([this, sub]() {
-    if (this->print_config) this->LogInfo("\n\n" + sub->config_to_str(true));
-    this->RunSubcmdPackAsset();
-  });
+  sub->callback([this]() { this->RunSubcmdPackAsset(); });
 }
 
 CLI::App* App::SetUpSubcmdPack() {

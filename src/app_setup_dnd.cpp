@@ -27,15 +27,6 @@ void App::RunDragAndDropExport() {
     return;
   }
 
-  if (this->print_config) {
-    auto* sub_exp = this->get_subcommand("exp");
-    auto* sub_unp = this->get_subcommand("unp");
-    std::string exp_opt_conf = sub_exp->config_to_str();
-    std::string unp_opt_conf = sub_unp->config_to_str();
-
-    if (!exp_opt_conf.empty() || !unp_opt_conf.empty()) this->LogInfo("\n" + exp_opt_conf + "\n" + unp_opt_conf);
-  }
-
   auto work_dir_path = fs::current_path();
 
   const fs::path output_path = work_dir_path / fs::u8path("unit_dnd");
@@ -53,22 +44,21 @@ void App::RunDragAndDropExport() {
 
     if (fs::is_regular_file(dir_entry)) {
       tasks.push_back(pool.AddTask([dir_entry, output_path, &exp_opt, &unp_opt]() {
-        UnpackOpt entry_unp_opt = unp_opt;
-
-        entry_unp_opt.input_path = dir_entry;
-
-        // an individual directory should be created for each file
-        entry_unp_opt.output_path = output_path / entry_unp_opt.input_path.filename();
-
         ExportOptions new_exp_opt = exp_opt;
 
         new_exp_opt.input_path = dir_entry;
-
+        // an individual directory should be created for each file
         new_exp_opt.output_path = output_path / new_exp_opt.input_path.filename() / new_exp_opt.input_path.filename();
 
         try {
           if (!Export(new_exp_opt, true)) {
             UNIT_LOG_INFO("trying to unpack...");
+
+            UnpackOpt entry_unp_opt = unp_opt;
+
+            entry_unp_opt.input_path = dir_entry;
+
+            entry_unp_opt.output_path = output_path / entry_unp_opt.input_path.filename();
             Unpack(entry_unp_opt);
           }
 

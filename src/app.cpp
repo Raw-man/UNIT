@@ -7,6 +7,23 @@
 namespace unit {
 std::mutex mut_cout;
 
+static const CLI::App* GetCurrentSubcommand_(const CLI::App* app) {
+  auto subcmd = app->get_subcommands();
+  if (subcmd.empty()) {
+    return app;
+  }
+
+  for (auto& sub : subcmd) return GetCurrentSubcommand_(sub);
+
+  return nullptr;
+}
+
+void App::pre_callback() {
+  auto current_sub = GetCurrentSubcommand_(this);
+
+  if (current_sub && this->print_config) PrintConfig(current_sub);
+};
+
 void App::Parse(int argc, char** argv) {
   if (argc < 2) {
     throw CLI::CallForHelp();
@@ -19,6 +36,22 @@ void App::Parse(int argc, char** argv) {
   if (this->get_option("export-files")->count() == 0 && this->get_subcommands().size() == 0) {
     throw CLI::RequiredError("A subcommand or a file path");
   }
+}
+
+void App::PrintConfig(const CLI::App* sub) {
+  if (sub == nullptr) return;
+
+  auto used_configs = this->config_ptr_->as<std::vector<std::string>>();
+  std::string msg;
+  if (!used_configs.empty()) msg += "used configs and ";
+
+  msg += "current option values:\n";
+
+  for (auto& config_path : used_configs) msg += config_path + "\n";
+
+  msg += "\n" + sub->config_to_str(true);
+
+  this->LogInfo(msg);
 }
 
 App::App() {

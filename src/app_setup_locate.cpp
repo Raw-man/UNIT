@@ -95,10 +95,7 @@ void App::SetUpSubcmdLocHex(CLI::App* loc) {
 
   SetUpSubcmdLocShared(sub_hex, loc_opt.search_path);
 
-  sub_hex->callback([this, sub_hex]() {
-    if (this->print_config) this->LogInfo("\n\n" + sub_hex->config_to_str(true));
-    this->RunSubcmdLocHex();
-  });
+  sub_hex->callback([this]() { this->RunSubcmdLocHex(); });
 }
 
 void App::SetUpSubcmdLocStr(CLI::App* loc) {
@@ -110,10 +107,7 @@ void App::SetUpSubcmdLocStr(CLI::App* loc) {
 
   sub_str->add_flag("--caseless,!--no-caseless", loc_opt.caseless, "Ignore character case")->default_val(false);
 
-  sub_str->callback([this, sub_str]() {
-    if (this->print_config) this->LogInfo("\n\n" + sub_str->config_to_str(true));
-    this->RunSubcmdLocStr();
-  });
+  sub_str->callback([this]() { this->RunSubcmdLocStr(); });
 }
 
 void App::SetUpSubcmdLocFile(CLI::App* loc) {
@@ -132,10 +126,7 @@ void App::SetUpSubcmdLocFile(CLI::App* loc) {
                    "for matching.")
       ->transform(CLI::AsSizeValue(false));
 
-  sub_file->callback([this, sub_file]() {
-    if (this->print_config) this->LogInfo("\n\n" + sub_file->config_to_str(true));
-    this->RunSubcmdLocFile();
-  });
+  sub_file->callback([this]() { this->RunSubcmdLocFile(); });
 }
 
 CLI::App* App::SetUpSubcmdLocate() {
