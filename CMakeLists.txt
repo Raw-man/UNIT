@@ -65,8 +65,8 @@ FetchContent_Declare(
 
 FetchContent_Declare(
     RANG
-    GIT_REPOSITORY https://github.com/AleBiCi/rang.git
-    GIT_TAG        f55210ce27c0fa87601526102904c2702256a8a5
+    GIT_REPOSITORY https://github.com/agauniyal/rang.git
+    GIT_TAG        56419fe3348a475c8dd83852d907794cec0ec798
 )
 
 set(BUILD_EXAMPLES OFF CACHE INTERNAL "" FORCE)
