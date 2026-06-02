@@ -111,14 +111,14 @@ bool ImportModelContainer(const ImportMdlOpt& opt) {
     auto bin_asset = utl::LoadFile(opt.base_path);
 
     if (!asset::IsOfType(bin_asset)) {
-      throw unit::RuntimeError("the base asset is not a model: " + opt.input_path.u8string());
+      throw unit::RuntimeError("the base asset is not a model: " + opt.base_path.u8string());
     }
 
     asset_container = asset::Import(bin_asset);
 
     if (asset_container.count(asset::Asset3D::kModel) == 0 ||
         !model::IsOfType(asset_container.at(asset::Asset3D::kModel)))
-      throw unit::RuntimeError("the base asset is not a model: " + opt.input_path.u8string());
+      throw unit::RuntimeError("the base asset is not a model: " + opt.base_path.u8string());
 
     if (asset_container.count(asset::Asset3D::kActionConfig) == 0 &&
         asset_container.count(asset::Asset3D::kColboxConfig) == 0)
