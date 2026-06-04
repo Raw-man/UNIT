@@ -45,42 +45,26 @@ void App::SetUpGeneral() {
       "\nunit <FILE1> [<FILE2>...] [OPTIONS]\n\n"
       "Use --help with a subcommand to get more info\n");
 
-  std::string config_path_global =
-      unit::utl::GetConfigFile("unit.toml",
-                               "#This is a global config."
-                               "\n#A local config can be placed into the program's current folder. "
-                               "In that case this one will be ignored."
-                               "\n#Uncomment the following to set new global settings"
-                               "\n#print-config=true"
-                               "\n#log-lvl=\"debug\""
-                               "\n#[imp.mdl]"
-                               "\n#merge-mat=true"
-                               "\n#indexed=false"
-                               "\n#sort=true"
-                               "\n#blend=true"
-                               "\n#[exp]"
-                               "\n#visibility=true")
-          .parent_path()
-          .u8string();
-
-  std::string config_path_local = std::filesystem::current_path().u8string();
-
-  this->set_config("--config", "unit.toml",
-                   "Read options from a toml config. The default config can be "
-                   "placed here:\n" +
-                       config_path_global + "\n" + config_path_local)
-      ->transform(CLI::FileOnDefaultPath(config_path_global, false))
-      ->capture_default_str();
-
   this->footer(
       "\nhttps://bit.ly/rcjn-cli\n"
       "\nhttps://www.youtube.com/RomanFirst\n"
       "\n1romanfirst@gmail.com\n"
       "\nhttps://github.com/Raw-man/UNIT");
 
-  auto default_formatter = this->get_formatter();
-
-  default_formatter->enable_default_flag_values(false);
+  auto config_path_global =
+      unit::utl::GetConfigFile("unit.toml",
+                               "# These are global configuration settings.\n"
+                               "# You can provide additional configuration files using the --config option.\n"
+                               "# Uncomment any lines below to apply new values.\n"
+                               "#print-config=true\n"
+                               "#log-lvl=\"debug\"\n"
+                               "#[imp.mdl]\n"
+                               "#merge-mat=true\n"
+                               "#indexed=false\n"
+                               "#sort=true\n"
+                               "#blend=true\n"
+                               "#[exp]\n"
+                               "#visibility=true");
 
   const std::vector<std::pair<std::string, App::LogType>> log_type_str = {{"debug", App::LogType::kDebug},
                                                                           {"info", App::LogType::kInfo},
@@ -90,6 +74,35 @@ void App::SetUpGeneral() {
   this->add_option("--log-lvl", this->log_lvl, "Set logging level")
       ->transform(EnumTransformer(log_type_str))
       ->capture_default_str();
+
+  auto conf_opt = this->set_config("--config", "",
+                                   "Read options from a toml config. The default config can be "
+                                   "placed here:\n" +
+                                       config_path_global.parent_path().u8string())
+                      ->capture_default_str()
+                      ->multi_option_policy(CLI::MultiOptionPolicy::Reverse)
+                      ->expected(1, -1);
+
+  this->add_flag(
+          "--global-config,!--no-global-config",
+          [conf_opt, config_path_global](std::int64_t count_true) {
+            if (count_true >= 0 && std::filesystem::is_regular_file(config_path_global)) {
+              auto results = conf_opt->reduced_results();
+
+              conf_opt->clear();
+
+              conf_opt->add_result(config_path_global.u8string());
+
+              for (auto res = std::rbegin(results); res != std::rend(results); ++res) {
+                conf_opt->add_result(std::move(*res));
+              }
+            }
+          },
+          "Use or ignore the global config")
+      ->callback_priority(CLI::CallbackPriority::First)
+      ->force_callback(true)
+      ->default_val(true)
+      ->configurable(false);
 
   this->add_flag("--print-config,!--no-print-config", this->print_config, "Print options and their current values")
       ->default_val(false);

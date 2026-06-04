@@ -452,19 +452,23 @@ void App::SetUpSubcmdImpFog(CLI::App* sub) {
 
   sub_fog->usage(" ");
 
-  sub_fog->callback([this]() {
-    std::vector<CLI::ConfigItem> values = config_formatter_->from_file(imp_fog_opt.input_path.u8string());
-    _parse_config(values);
-
-    this->RunSubcmdImpFog();
-  });
+  sub_fog->callback([this]() { this->RunSubcmdImpFog(); });
 
   auto& imp_opt = this->imp_fog_opt;
 
-  sub_fog->add_option("-i,--input,input", imp_opt.input_path, "An input path to the toml config")
+  sub_fog
+      ->add_option_function<fs::path>(
+          "-i,--input,input",
+          [this, &imp_opt](const fs::path& path) {
+            auto conf_opt = this->get_option("--config");
+            imp_opt.input_path = path;
+            conf_opt->add_result(path.u8string());
+          },
+          "An input path to a toml config")
       ->required(true)
       ->transform(NormalizePath)
-      ->check(CLI::ExistingFile);
+      ->check(CLI::ExistingFile)
+      ->callback_priority(CLI::CallbackPriority::First);
 
   sub_fog->add_option("-o,--output,output", imp_opt.output_path, "An output path to the resulting fog file")
       ->required(true)
@@ -483,28 +487,31 @@ void App::SetUpSubcmdImpFog(CLI::App* sub) {
 }
 
 void App::SetUpSubcmdImpDis(CLI::App* sub) {
-  auto* sub_dis = sub->add_subcommand("dis", "Import a distance config (NSUNI only!)")
-                      ->excludes(sub->get_subcommand_ptr("fog").get());
+  auto* sub_dis = sub->add_subcommand("dis", "Import a distance config (NSUNI only!)");
 
   sub_dis->alias("distance");
 
   sub_dis->usage(" ");
 
-  sub_dis->callback([this]() {
-    std::vector<CLI::ConfigItem> values = config_formatter_->from_file(imp_dis_opt.input_path.u8string());
-    _parse_config(values);
-
-    this->RunSubcmdImpDis();
-  });
+  sub_dis->callback([this]() { this->RunSubcmdImpDis(); });
 
   auto& imp_opt = this->imp_dis_opt;
 
-  sub_dis->add_option("-i,--input,input", imp_opt.input_path, "An input path to the toml config")
+  sub_dis
+      ->add_option_function<fs::path>(
+          "-i,--input,input",
+          [this, &imp_opt](const fs::path& path) {
+            auto conf_opt = this->get_option("--config");
+            imp_opt.input_path = path;
+            conf_opt->add_result(path.u8string());
+          },
+          "An input path to a toml config")
       ->required(true)
       ->transform(NormalizePath)
-      ->check(CLI::ExistingFile);
+      ->check(CLI::ExistingFile)
+      ->callback_priority(CLI::CallbackPriority::First);
 
-  sub_dis->add_option("-o,--output", imp_opt.output_path, "An output path to the resulting distance file")
+  sub_dis->add_option("-o,--output,output", imp_opt.output_path, "An output path to the resulting distance file")
       ->required(true)
       ->transform(NormalizePath)
       ->check(ExistingParentPathFile);
