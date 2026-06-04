@@ -47,13 +47,6 @@ bool Export(const ExportOptions& opt, bool exp_to_dir) {
 
       auto base_container = asset::ImportView(bin_base_asset);
 
-      if (base_container.size() < asset_container.size()) {
-        UNIT_LOG_ERROR(
-            "the original base container has fewer parts than the partial one. "
-            "Try swapping -b and -i");
-        return false;
-      }
-
       if (base_container.count(asset::Asset3D::kModel) == 0 ||
           !model::IsOfType(base_container.at(asset::Asset3D::kModel))) {
         UNIT_LOG_ERROR("the base asset does not contain a model " + opt.base_path.u8string());
@@ -66,7 +59,7 @@ bool Export(const ExportOptions& opt, bool exp_to_dir) {
 
       asset_container = std::move(base_container);
 
-      category = asset::Categorize(asset_container);
+      category = asset::Category::kAsset3DModel;
     }
 
     if (category == asset::Category::kAsset3DModel) {
