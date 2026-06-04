@@ -20,16 +20,6 @@ void App::SetUpGeneral() {
 
   auto formatter = std::make_shared<unit::Formatter>();
 
-  formatter->label("TEXT:FILE", "PATH:FILE");
-
-  formatter->label("TEXT:DIR", "PATH:DIR");
-
-  formatter->label("TEXT:PATH", "PATH");
-
-  formatter->label("TEXT:PATH(existing)", "PATH(existing)");
-
-  formatter->label("TEXT:DIR:PATH(non-existing)", "PATH:DIR(non-existing)");
-
   this->formatter(formatter);
 
   this->description(
