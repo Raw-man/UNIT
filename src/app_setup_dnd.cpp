@@ -15,17 +15,12 @@ namespace unit {
 
 using namespace std::string_literals;
 
-void App::RunDragAndDropExport() {
+void App::RunDragAndDrop() {
   const std::set<std::string>& input_paths = this->input_paths;
   const ExportOptions& exp_opt = this->exp_opt;
   const UnpackOpt& unp_opt = this->unp_opt;
 
   if (input_paths.empty()) return;
-
-  if (this->get_subcommands().size() != 0) {
-    UNIT_LOG_DEBUG("A subcommand was already issued and executed, file export ignored");
-    return;
-  }
 
   auto work_dir_path = fs::current_path();
 
@@ -40,33 +35,33 @@ void App::RunDragAndDropExport() {
   UNIT_LOG_DEBUG("threads: " + std::to_string(pool.GetNumThreads()));
 
   for (const auto& dir_entry_str : input_paths) {
-    std::filesystem::path dir_entry = fs::absolute(fs::u8path(dir_entry_str)).lexically_normal();
+    auto dir_entry = fs::u8path(NormalizePath(dir_entry_str));
 
-    if (fs::is_regular_file(dir_entry)) {
-      tasks.push_back(pool.AddTask([dir_entry, output_path, &exp_opt, &unp_opt]() {
-        ExportOptions new_exp_opt = exp_opt;
+    if (!fs::is_regular_file(dir_entry)) throw unit::RuntimeError("the file does not exist " + dir_entry.u8string());
 
-        new_exp_opt.input_path = dir_entry;
-        // an individual directory should be created for each file
-        new_exp_opt.output_path = output_path / new_exp_opt.input_path.filename() / new_exp_opt.input_path.filename();
+    tasks.push_back(pool.AddTask([dir_entry, output_path, &exp_opt, &unp_opt]() {
+      ExportOptions new_exp_opt = exp_opt;
 
-        try {
-          if (!Export(new_exp_opt, true)) {
-            UNIT_LOG_INFO("trying to unpack...");
+      new_exp_opt.input_path = dir_entry;
+      // an individual directory should be created for each file
+      new_exp_opt.output_path = output_path / new_exp_opt.input_path.filename() / new_exp_opt.input_path.filename();
 
-            UnpackOpt entry_unp_opt = unp_opt;
+      try {
+        if (!Export(new_exp_opt, true)) {
+          UNIT_LOG_INFO("trying to unpack...");
 
-            entry_unp_opt.input_path = dir_entry;
+          UnpackOpt entry_unp_opt = unp_opt;
 
-            entry_unp_opt.output_path = output_path / entry_unp_opt.input_path.filename();
-            Unpack(entry_unp_opt);
-          }
+          entry_unp_opt.input_path = dir_entry;
 
-        } catch (const std::exception& e) {
-          UNIT_LOG_ERROR(e.what() + ("; " + new_exp_opt.input_path.u8string()));
+          entry_unp_opt.output_path = output_path / entry_unp_opt.input_path.filename();
+          Unpack(entry_unp_opt);
         }
-      }));
-    }
+
+      } catch (const std::exception& e) {
+        UNIT_LOG_ERROR(e.what() + ("; " + new_exp_opt.input_path.u8string()));
+      }
+    }));
   }
 
   UNIT_LOG_DEBUG("tasks: " + std::to_string(tasks.size()));
@@ -79,13 +74,11 @@ void App::RunDragAndDropExport() {
 }
 
 void App::SetUpDragAndDrop() {
-  this->add_option("export-files", this->input_paths, "Drop files onto the executable or list them manually")
-      ->transform(NormalizePath)
-      ->check(CLI::ExistingFile)
+  this->add_option("drag-and-drop", this->input_paths, "Drop files onto the executable or list them manually")
       ->group("")
       ->configurable(false);
 
-  this->callback([this]() { this->RunDragAndDropExport(); });
+  this->callback([this]() { this->RunDragAndDrop(); });
 }
 
 }  // namespace unit

@@ -127,12 +127,6 @@ void App::SetUpSubcmdExport() {
 
   sub->fallthrough(true);
 
-  // block propagation
-  sub->add_option("export-files-block-1", this->input_paths)
-      ->group("")
-      ->check([](const std::string& str) { return "The following argument was not expected: " + str; })
-      ->configurable(false);
-
   sub->callback([this]() { this->RunSubcmdExport(); });
 }
 

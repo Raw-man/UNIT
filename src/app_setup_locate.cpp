@@ -144,12 +144,6 @@ CLI::App* App::SetUpSubcmdLocate() {
 
   sub->fallthrough(true);
 
-  // block propagation
-  sub->add_option("export-files-block-3", this->input_paths)
-      ->group("")
-      ->check([](const std::string& str) { return "The following argument was not expected: " + str; })
-      ->configurable(false);
-
   return sub;
 }
 

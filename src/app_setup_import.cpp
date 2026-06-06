@@ -652,12 +652,6 @@ CLI::App* App::SetUpSubcmdImport() {
 
   sub->alias("import");
 
-  // block propagation
-  sub->add_option("export-files-block-2", this->input_paths)
-      ->group("")
-      ->check([](const std::string& str) { return "The following argument was not expected: " + str; })
-      ->configurable(false);
-
   sub->fallthrough(true);
 
   sub->require_subcommand(1);

@@ -104,7 +104,7 @@ class App : private CLI::App {
 
   void RunSubcmdExport();
 
-  void RunDragAndDropExport();
+  void RunDragAndDrop();
 
   void RunSubcmdImpMdl();
 

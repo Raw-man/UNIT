@@ -21,6 +21,10 @@ static const CLI::App* GetCurrentSubcommand_(const CLI::App* app) {
 void App::pre_callback() {
   auto current_sub = GetCurrentSubcommand_(this);
 
+  if (current_sub != this && !this->input_paths.empty()) {
+    throw CLI::ExtrasError("drag-and-drop", {*input_paths.cbegin()});
+  }
+
   if (current_sub && this->print_config) PrintConfig(current_sub);
 };
 
@@ -33,7 +37,7 @@ void App::Parse(int argc, char** argv) {
 
   this->parse(argc, utf8_argv);
 
-  if (this->get_option("export-files")->count() == 0 && this->get_subcommands().size() == 0) {
+  if (this->get_option("drag-and-drop")->count() == 0 && this->get_subcommands().size() == 0) {
     throw CLI::RequiredError("A subcommand or a file path");
   }
 }

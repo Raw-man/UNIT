@@ -159,12 +159,6 @@ CLI::App* App::SetUpSubcmdPack() {
                 "used consistently during both packing and unpacking.")
       ->default_val(false);
 
-  // block propagation
-  sub->add_option("export-files-block-5", this->input_paths)
-      ->group("")
-      ->check([](const std::string& str) { return "The following argument was not expected: " + str; })
-      ->configurable(false);
-
   sub->require_subcommand(1);
 
   return sub;
