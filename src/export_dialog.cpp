@@ -75,7 +75,7 @@ void ToXMLNode(pugi::xml_node& unit, const text::Text& text, std::size_t str_id)
 
   if (!buffer.empty()) {
     source.append_child(pugi::node_pcdata).set_value(buffer.c_str());
-  };
+  }
 }
 
 void SerializeAsXLIFF(const text::Text& text, const ExportOptions& opt) {
@@ -108,6 +108,26 @@ void SerializeAsXLIFF(const text::Text& text, const ExportOptions& opt) {
   }
 }
 
+void FillImpOpt(ImportTxtOpt& imp_opt, const asset::AssetView& asset_container) {
+  const auto& advance_widths = asset_container.at(asset::BitmapText::kAdvanceWidth);
+
+  std::size_t max_width = 16;
+
+  for (auto advance : advance_widths) max_width = std::max<std::size_t>(max_width, advance + 1);
+
+  max_width = nnl::utl::math::RoundUpPow2(max_width);
+
+  imp_opt.columns = imp_opt.quality / max_width;  // approximate the number
+};
+
+void GenerateConfig(const ImportTxtOpt& imp_opt, const fs::path& output_path) {
+  std::string toml = "[imp.txt]\n";
+
+  toml += "columns = " + std::to_string(imp_opt.columns) + "\n";
+
+  utl::SaveFile(output_path, toml);
+}
+
 bool ExportDialog(const asset::AssetView& asset_container, const ExportOptions& options) {
   auto text = text::Import(asset_container.at(asset::BitmapText::kText));
 
@@ -116,6 +136,13 @@ bool ExportDialog(const asset::AssetView& asset_container, const ExportOptions& 
   auto stextures = texture::Convert(textures);
 
   SerializeAsXLIFF(text, options);
+
+  if (!stextures.empty()) {
+    ImportTxtOpt imp_opt;
+    imp_opt.quality = stextures.at(0).width;
+    FillImpOpt(imp_opt, asset_container);
+    GenerateConfig(imp_opt, unit::utl::ReplaceExtensionFront(options.output_path, fs::u8path(".toml")));
+  }
 
   auto parent_path = options.output_path.parent_path();
 
