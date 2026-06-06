@@ -112,12 +112,12 @@ void AppendMainExtension(std::string& file_name, format::FileFormat type) { file
 
 void AppendCategoryExtension(std::string& file_name, asset::Category type) { file_name += GetCatExtension(type); }
 
-void GenerateConfig(std::string cmd, const fs::path& input_path) {
+void GenerateConfig(std::string cmd, const fs::path& output_path) {
   std::string toml = "[pac." + cmd + "]\n" +
                      "input = \"."
                      "\"\n"
                      "recursive = true";
-  auto new_path = input_path / fs::u8path(".toml");
+  auto new_path = output_path / fs::u8path(".toml");
 
   utl::SaveFile(new_path, toml);
 }
