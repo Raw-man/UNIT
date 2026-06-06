@@ -566,7 +566,7 @@ void App::SetUpSubcmdImpText(CLI::App* sub) {
 
   auto& imp_opt = this->imp_txt_opt;
 
-  sub_txt->add_option("-i,--input,input", imp_opt.input_path, "An input path to an .xlf file ")
+  sub_txt->add_option("-i,--input,input", imp_opt.input_path, "An input path to an .xlf file")
       ->required(true)
       ->transform(NormalizePath)
       ->check(CLI::ExistingFile);
@@ -579,9 +579,9 @@ void App::SetUpSubcmdImpText(CLI::App* sub) {
   sub_txt
       ->add_option("-t,-b,--typeface,--base,typeface", imp_opt.typeface_paths,
                    "An input path or paths to .ttf/.otf fonts (font family) that have glyphs "
-                   "for the target language\n"
-                   "You can also specify the path to "
-                   "the original game text archive to use the original bitmap font")
+                   "for the target language.\n"
+                   "You can also provide a path to "
+                   "an existing game text archive to use its bitmap font (available characters will be limited)")
       ->required(true)
       ->transform(NormalizePath)
       ->check(CLI::ExistingFile);
@@ -596,7 +596,7 @@ void App::SetUpSubcmdImpText(CLI::App* sub) {
       ->transform(EnumTransformer(mapping))
       ->capture_default_str();
 
-  auto bitmap_group = sub_txt->add_option_group("FONT", "");
+  auto bitmap_group = sub_txt->add_option_group("FONT", "Note: ignored when an existing bitmap font is used");
 
   auto texture_group = sub_txt->add_option_group("TEXTURE", "");
 
@@ -604,7 +604,7 @@ void App::SetUpSubcmdImpText(CLI::App* sub) {
       ->add_flag("--kerning,!--no-kerning", imp_opt.kerning,
                  "Simulate kerning. This adjusts the spacing between pairs of "
                  "some characters to improve visual layout, but it may greatly "
-                 "increase the file size.")
+                 "increase the file size")
       ->default_val(false);
 
   bitmap_group->add_option("--spacing", imp_opt.tracking_offset, "A value added to space between glyphs")
