@@ -468,7 +468,8 @@ void App::SetUpSubcmdImpFog(CLI::App* sub) {
       ->required(true)
       ->transform(NormalizePath)
       ->check(CLI::ExistingFile)
-      ->callback_priority(CLI::CallbackPriority::First);
+      ->callback_priority(CLI::CallbackPriority::First)
+      ->configurable(false);
 
   sub_fog->add_option("-o,--output,output", imp_opt.output_path, "An output path to the resulting fog file")
       ->required(true)
@@ -509,7 +510,8 @@ void App::SetUpSubcmdImpDis(CLI::App* sub) {
       ->required(true)
       ->transform(NormalizePath)
       ->check(CLI::ExistingFile)
-      ->callback_priority(CLI::CallbackPriority::First);
+      ->callback_priority(CLI::CallbackPriority::First)
+      ->configurable(false);
 
   sub_dis->add_option("-o,--output,output", imp_opt.output_path, "An output path to the resulting distance file")
       ->required(true)
