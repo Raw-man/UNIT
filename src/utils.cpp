@@ -101,7 +101,7 @@ std::vector<fs::path> GetDirEntries_(const fs::path& dir_path, bool skip_hidden 
                                      const std::vector<std::string>& allowed_ext = {}) {
   std::vector<fs::path> entries;
 
-  const fs::path dir_path_abs = fs::absolute(dir_path).lexically_normal();
+  const fs::path dir_path_abs = NormalizePath(dir_path);
 
   for (const fs::directory_entry& dir_entry : fs::directory_iterator(dir_path_abs)) {
     fs::path path = dir_entry.path();

@@ -5,7 +5,6 @@
 #include "threadpool.hpp"
 #include "unpack.hpp"
 #include "utils.hpp"
-#include "validators.hpp"
 
 namespace fs = std::filesystem;
 
@@ -16,7 +15,7 @@ namespace unit {
 using namespace std::string_literals;
 
 void App::RunDragAndDrop() {
-  const std::set<std::string>& input_paths = this->input_paths;
+  const std::set<fs::path>& input_paths = this->input_paths;
   const ExportOptions& exp_opt = this->exp_opt;
   const UnpackOpt& unp_opt = this->unp_opt;
 
@@ -26,6 +25,23 @@ void App::RunDragAndDrop() {
 
   const fs::path output_path = work_dir_path / fs::u8path("unit_dnd");
 
+  std::vector<fs::path> file_list;
+  file_list.reserve(input_paths.size());
+
+  for (const auto& input_path_src : input_paths) {
+    fs::path input_path = utl::NormalizePath(input_path_src);
+    auto status = fs::status(input_path);
+
+    if (!fs::exists(status)) throw unit::RuntimeError("the path does not exist " + input_path.u8string());
+
+    if (fs::is_directory(status)) {
+      auto files = utl::GetDirFiles(input_path);
+      file_list.insert(file_list.end(), files.begin(), files.end());
+    } else if (fs::is_regular_file(status)) {
+      file_list.push_back(input_path);
+    }
+  }
+
   utl::CreateDir(output_path);
 
   std::vector<std::future<void>> tasks;
@@ -34,11 +50,7 @@ void App::RunDragAndDrop() {
 
   UNIT_LOG_DEBUG("threads: " + std::to_string(pool.GetNumThreads()));
 
-  for (const auto& dir_entry_str : input_paths) {
-    auto dir_entry = fs::u8path(NormalizePath(dir_entry_str));
-
-    if (!fs::is_regular_file(dir_entry)) throw unit::RuntimeError("the file does not exist " + dir_entry.u8string());
-
+  for (const auto& dir_entry : file_list) {
     tasks.push_back(pool.AddTask([dir_entry, output_path, &exp_opt, &unp_opt]() {
       ExportOptions new_exp_opt = exp_opt;
 

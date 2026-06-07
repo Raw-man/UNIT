@@ -29,11 +29,9 @@ void App::RunSubcmdExport() {
 
     UNIT_LOG_DEBUG("threads: " + std::to_string(pool.GetNumThreads()));
 
-    auto dir_entries = utl::GetDirEntries(exp_opt.input_path);
+    auto dir_entries = utl::GetDirFiles(exp_opt.input_path);
 
     for (const auto& dir_entry : dir_entries) {
-      if (!fs::is_regular_file(dir_entry)) continue;
-
       tasks.push_back(pool.AddTask([&exp_opt, dir_entry]() {
         ExportOptions entry_exp_opt = exp_opt;
 

@@ -22,7 +22,7 @@ void App::pre_callback() {
   auto current_sub = GetCurrentSubcommand_(this);
 
   if (current_sub != this && !this->input_paths.empty()) {
-    throw CLI::ExtrasError("drag-and-drop", {*input_paths.cbegin()});
+    throw CLI::ExtrasError("drag-and-drop", {(*input_paths.cbegin()).u8string()});
   }
 
   if (current_sub && this->print_config) PrintConfig(current_sub);

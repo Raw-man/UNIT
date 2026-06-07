@@ -152,7 +152,7 @@ class App : private CLI::App {
 
   LogType log_lvl = LogType::kInfo;
 
-  std::set<std::string> input_paths;
+  std::set<fs::path> input_paths;
 
   ExportOptions exp_opt;
 
