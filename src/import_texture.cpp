@@ -6,7 +6,7 @@ namespace unit {
 bool ImportTextureContainer(const ImportImgOpt& opt) {
   std::vector<std::future<void>> tasks;
 
-  auto image_files = utl::GetSortedDirEntries(opt.input_path, {".png", ".jpg", ".jpeg", ".bmp"});
+  auto image_files = utl::GetSortedDirFiles(opt.input_path, {".png", ".jpg", ".jpeg", ".bmp"});
 
   if (image_files.empty())
     throw unit::RuntimeError("no images were found in the directory " + opt.input_path.u8string());

@@ -96,7 +96,7 @@ bool ImportPPHD8(const ImportSndOpt& opt) {
   offset_sample += 0x20;                     // Go to array of vagParam
   pphd8.Seek(offset_sample);
 
-  auto audio_files = utl::GetSortedDirEntries(opt.input_path, {".wav", ".mp3"});
+  auto audio_files = utl::GetSortedDirFiles(opt.input_path, {".wav", ".mp3"});
 
   UNIT_LOG_INFO("num entries: " + std::to_string(audio_files.size()));
 

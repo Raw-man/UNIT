@@ -23,7 +23,7 @@ void App::RunSubcmdLocStr() {
     return std::hash<unsigned char>{}(std::tolower(static_cast<unsigned char>(c)));
   };
 
-  if (loc_opt.caseless && utl::utf8::IsASCII(loc_opt.input_string)) {
+  if (loc_opt.caseless && nnl::utl::utf8::IsASCII(loc_opt.input_string)) {
     Locate(needle, loc_opt.search_path, CaselessHash, CaselessComp);
   } else {
     if (loc_opt.caseless) UNIT_LOG_WARN("--caseless not supported for UTF-8 strings");

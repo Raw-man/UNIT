@@ -3,6 +3,7 @@
 #include <CLI/CLI.hpp>
 #include <filesystem>
 #include <string>
+#include "utils.hpp"
 #include "NNL/utility/string.hpp"
 
 namespace unit {
@@ -148,16 +149,7 @@ const static ValidBCP47Validator ValidBCP47;
 
 inline const auto NormalizePath = [](const std::string& str) -> std::string {
 
-  if(str.empty()) return str;
-
-  auto full_path = std::filesystem::u8path(str);
-
-  full_path = full_path.lexically_normal();
-
-  full_path = std::filesystem::absolute(full_path);
-
-  // remove trailing slash
-  if (!full_path.has_filename()) full_path = full_path.parent_path();
+  auto full_path = utl::NormalizePath(fs::u8path(str));
 
   return full_path.u8string();
 };

@@ -23,8 +23,21 @@ namespace unit {
 
 namespace utl {
 
+fs::path NormalizePath(const fs::path& path) {
+  if (path.empty()) return path;
+
+  auto full_path = std::filesystem::absolute(path);
+
+  full_path = full_path.lexically_normal();
+
+  // remove trailing slash
+  if (!full_path.has_filename()) full_path = full_path.parent_path();
+
+  return full_path;
+}
+
 template <typename TContainer = std::vector<unsigned char>>
-TContainer LoadFile_(const std::filesystem::path& path) {
+TContainer LoadFile_(const fs::path& path) {
   std::ifstream file(path, std::ios::binary | std::ios::ate);
   if (!file) return {};
 
@@ -40,12 +53,12 @@ TContainer LoadFile_(const std::filesystem::path& path) {
   return buffer;
 }
 
-std::vector<unsigned char> LoadFile(const std::filesystem::path& path) { return LoadFile_(path); }
+std::vector<unsigned char> LoadFile(const fs::path& path) { return LoadFile_(path); }
 
-std::string LoadTextFile(const std::filesystem::path& path) { return LoadFile_<std::string>(path); }
+std::string LoadTextFile(const fs::path& path) { return LoadFile_<std::string>(path); }
 
 template <typename TContainer>
-void SaveFile_(const std::filesystem::path& path, const TContainer& buffer) {
+void SaveFile_(const fs::path& path, const TContainer& buffer) {
   if (fs::is_directory(path))
     throw unit::RuntimeError(
         "failed to create the file since a directory with the same name "
@@ -62,13 +75,13 @@ void SaveFile_(const std::filesystem::path& path, const TContainer& buffer) {
   file.write(reinterpret_cast<const char*>(buffer.data()), buffer.size());
 }
 
-void SaveFile(const std::filesystem::path& path, const std::vector<unsigned char>& buffer) { SaveFile_(path, buffer); }
+void SaveFile(const fs::path& path, const std::vector<unsigned char>& buffer) { SaveFile_(path, buffer); }
 
-void SaveFile(const std::filesystem::path& path, const std::string& buffer) { SaveFile_(path, buffer); }
+void SaveFile(const fs::path& path, const std::string& buffer) { SaveFile_(path, buffer); }
 
-void SaveFile(const std::filesystem::path& path, const nnl::BufferView& buffer) { SaveFile_(path, buffer); }
+void SaveFile(const fs::path& path, const nnl::BufferView& buffer) { SaveFile_(path, buffer); }
 
-void CreateDir(const std::filesystem::path& output_path) {
+void CreateDir(const fs::path& output_path) {
   bool success = false;
   std::string err_msg = "failed to create the directory";
   if (fs::exists(output_path)) {
@@ -83,12 +96,17 @@ void CreateDir(const std::filesystem::path& output_path) {
   }
 }
 
-std::vector<std::filesystem::path> GetSortedDirEntries(const std::filesystem::path& dir_path,
-                                                       const std::vector<std::string>& allowed_ext, bool skip_hidden) {
-  std::set<std::string, decltype(&nnl::utl::string::CompareNat)> sorted_entries(&nnl::utl::string::CompareNat);
+template <bool sort, bool files_only>
+std::vector<fs::path> GetDirEntries_(const fs::path& dir_path, bool skip_hidden = true,
+                                     const std::vector<std::string>& allowed_ext = {}) {
+  std::vector<fs::path> entries;
 
-  for (const fs::directory_entry& dir_entry : fs::directory_iterator(dir_path)) {
-    const auto& path = dir_entry.path();
+  const fs::path dir_path_abs = fs::absolute(dir_path).lexically_normal();
+
+  for (const fs::directory_entry& dir_entry : fs::directory_iterator(dir_path_abs)) {
+    fs::path path = dir_entry.path();
+
+    if (files_only && !fs::is_regular_file(dir_entry.status())) continue;
 
     if (!allowed_ext.empty()) {
       std::string ext = nnl::utl::string::ToLower(path.extension().u8string());
@@ -99,44 +117,45 @@ std::vector<std::filesystem::path> GetSortedDirEntries(const std::filesystem::pa
     }
 
     std::string name = path.filename().u8string();
-    if (!skip_hidden || !nnl::utl::string::StartsWith(name, ".")) sorted_entries.insert(name);
+
+    if (!skip_hidden || !nnl::utl::string::StartsWith(name, ".")) entries.push_back(std::move(path));
   }
 
-  std::vector<std::filesystem::path> entries;
+  if constexpr (sort) {
+    std::set<std::string, decltype(&nnl::utl::string::CompareNat)> sorted_entries(&nnl::utl::string::CompareNat);
 
-  entries.reserve(sorted_entries.size());
+    for (const auto& path : entries) sorted_entries.insert(path.filename().u8string());
 
-  for (const auto& entry : sorted_entries) {
-    entries.push_back(fs::absolute(dir_path / fs::u8path(entry)).lexically_normal());
-  }
+    entries.clear();
 
-  return entries;
-};
-
-std::vector<std::filesystem::path> GetDirEntries(const std::filesystem::path& dir_path,
-                                                 const std::vector<std::string>& allowed_ext, bool skip_hidden) {
-  std::vector<std::filesystem::path> entries;
-
-  for (const fs::directory_entry& dir_entry : fs::directory_iterator(dir_path)) {
-    const auto& path = dir_entry.path();
-
-    if (!allowed_ext.empty()) {
-      std::string ext = nnl::utl::string::ToLower(path.extension().u8string());
-
-      auto itr_ext = std::find(allowed_ext.begin(), allowed_ext.end(), ext);
-
-      if (itr_ext == allowed_ext.end()) continue;
+    for (const auto& entry : sorted_entries) {
+      entries.push_back(dir_path_abs / fs::u8path(entry));
     }
-
-    if (!skip_hidden || !nnl::utl::string::StartsWith(path.filename().u8string(), "."))
-      entries.push_back(fs::absolute(path).lexically_normal());
   }
 
   return entries;
 };
 
-std::filesystem::path GetConfigFile(const std::string& appname, const std::string& content) {
-  std::filesystem::path config_path;
+std::vector<fs::path> GetDirEntries(const fs::path& dir_path, bool skip_hidden) {
+  return GetDirEntries_<false, false>(dir_path, skip_hidden);
+};
+
+std::vector<fs::path> GetSortedDirEntries(const fs::path& dir_path, bool skip_hidden) {
+  return GetDirEntries_<true, false>(dir_path, skip_hidden);
+};
+
+std::vector<fs::path> GetDirFiles(const fs::path& dir_path, const std::vector<std::string>& allowed_ext,
+                                  bool skip_hidden) {
+  return GetDirEntries_<false, true>(dir_path, skip_hidden, allowed_ext);
+};
+
+std::vector<fs::path> GetSortedDirFiles(const fs::path& dir_path, const std::vector<std::string>& allowed_ext,
+                                        bool skip_hidden) {
+  return GetDirEntries_<true, true>(dir_path, skip_hidden, allowed_ext);
+};
+
+fs::path GetConfigFile(const std::string& appname, const std::string& content) {
+  fs::path config_path;
 
 #ifdef linux
   char* home = getenv("XDG_CONFIG_HOME");
@@ -149,7 +168,7 @@ std::filesystem::path GetConfigFile(const std::string& appname, const std::strin
 
   config_path = home;
 
-  config_path = config_path / std::filesystem::u8path(".config/");
+  config_path = config_path / fs::u8path(".config/");
 #endif
 
 #ifdef _WIN32
@@ -164,16 +183,16 @@ std::filesystem::path GetConfigFile(const std::string& appname, const std::strin
 
   if (config_path.empty()) return config_path;
 
-  config_path = config_path / std::filesystem::u8path(appname).stem();
+  config_path = config_path / fs::u8path(appname).stem();
 
-  bool created = std::filesystem::create_directories(config_path);
+  bool created = fs::create_directories(config_path);
 
-  config_path = config_path / std::filesystem::u8path(appname);
+  config_path = config_path / fs::u8path(appname);
 
   if (created) {
     std::ofstream out(config_path);
 
-    if (!out.is_open()) return std::filesystem::path();
+    if (!out.is_open()) return fs::path();
 
     out << content;
 
@@ -183,15 +202,14 @@ std::filesystem::path GetConfigFile(const std::string& appname, const std::strin
   return config_path;
 }
 
-std::filesystem::path ReplaceExtensionFront(const std::filesystem::path& path,
-                                            const std::filesystem::path& new_extension) {
+fs::path ReplaceExtensionFront(const fs::path& path, const fs::path& new_extension) {
   auto new_name = path.filename().u8string();
   auto dot = new_name.find(".");
   if (dot != std::string::npos) {
     new_name = new_name.substr(0, dot);
   }
 
-  return (path.parent_path() / std::filesystem::u8path(new_name)).replace_extension(new_extension);
+  return (path.parent_path() / fs::u8path(new_name)).replace_extension(new_extension);
 }
 
 std::string BytesToMegabytes(std::size_t size) {
