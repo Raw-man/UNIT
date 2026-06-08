@@ -35,13 +35,13 @@ void App::SetUpSubcmdUnpack() {
       ->check(ExistingParentPathDir)
       ->check(CLI::NonexistentPath);
 
-  std::vector<std::pair<std::string, UnpackOpt::Naming>> naming{{"default", UnpackOpt::Naming::kDefault},
-                                                                {"plugin", UnpackOpt::Naming::kPlugin},
-                                                                {"old_plugin", UnpackOpt::Naming::kOldPlugin}};
+  const std::vector<std::pair<std::string, UnpackOpt::Naming>> naming{{"default", UnpackOpt::Naming::kDefault},
+                                                                      {"plugin", UnpackOpt::Naming::kPlugin},
+                                                                      {"old_plugin", UnpackOpt::Naming::kOldPlugin}};
 
   sub->add_option("--naming", unp_opt.naming, "Set file names when unpacking primary .BIN archives")
       ->transform(EnumTransformer(naming))
-      ->capture_default_str();
+      ->default_str(naming.front().first);
 
   sub->add_flag("--recursive,!--no-recursive", unp_opt.recursive,
                 "Unpack files from the container that are also simple "

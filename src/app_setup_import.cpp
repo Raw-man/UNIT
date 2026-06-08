@@ -78,7 +78,7 @@ void SetUpComTextureOpt(CLI::App* texture_group, Opt& imp_opt) {
 }
 
 void App::SetUpSubcmdImpMdl(CLI::App* sub) {
-  auto* sub_mdl = sub->add_subcommand("mdl", "Import a 3d model");
+  auto* sub_mdl = sub->add_subcommand("mdl", "Import a 3D model");
 
   sub_mdl->alias("model");
 
@@ -142,7 +142,7 @@ void App::SetUpSubcmdImpMdl(CLI::App* sub) {
                  "Merge duplicate materials: might improve performance")
       ->default_val(false);
 
-  asset_group->add_flag("--flip,!--no-flip", imp_opt.flip, "Flip textures and uvs")->default_val(true);
+  asset_group->add_flag("--flip,!--no-flip", imp_opt.flip, "Flip textures and UVs")->default_val(true);
   asset_group
       ->add_flag("--sskeleton,!--no-sskeleton", imp_opt.sskeleton,
                  "Construct a new simplified skeleton that uses only translations for "
@@ -155,7 +155,7 @@ void App::SetUpSubcmdImpMdl(CLI::App* sub) {
       ->transform(NormalizePath)
       ->check(CLI::ExistingFile);
 
-  sub_mdl->add_option("-o,--output,output", imp_opt.output_path, "An output path to the resulting 3d model")
+  sub_mdl->add_option("-o,--output,output", imp_opt.output_path, "An output path to the resulting 3D model")
       ->required(true)
       ->transform(NormalizePath)
       ->check(ExistingParentPathFile);
@@ -234,7 +234,7 @@ void App::SetUpSubcmdImpCam(CLI::App* sub) {
       "\nSet Frame Rate to 30, Frame Start to 0, Frame End to 1000 before "
       "importing assets into Blender (4.4 is recommended)"
       "\nToggle \"Cameras\" when exporting from Blender"
-      "\nA game camera is technically just a 3d model with animations. Do not "
+      "\nA game camera is technically just a 3D model with animations. Do not "
       "export anything unrelated to it");
 
   sub_cam->fallthrough();
@@ -401,7 +401,7 @@ void App::SetUpSubcmdImpSnd(CLI::App* sub) {
   sub_snd
       ->add_option("--max-sr", imp_opt.max_sr,
                    "Set the maximum sample rate. Audio files exceeding this "
-                   "rate will be resampled.")
+                   "rate will be resampled")
       ->check(CLI::IsMember({8000, 11025, 16000, 22050, 44100, 48000}))
       ->capture_default_str();
 }
@@ -414,8 +414,8 @@ void App::SetUpSubcmdImpImg(CLI::App* sub) {
   sub_ui->alias("texture");
 
   sub_ui->usage(
-      "\nNote: numeric prefixes in the names of files must be preserved. A "
-      "patch is required to use upscaled ui textures (with the plugin).");
+      "Note: numeric prefixes in the names of files must be preserved.\n"
+      "A patch is required to use upscaled ui textures (with the plugin).");
 
   sub_ui->callback([this]() { this->RunSubcmdImpImg(); });
 
@@ -464,7 +464,7 @@ void App::SetUpSubcmdImpFog(CLI::App* sub) {
             imp_opt.input_path = path;
             conf_opt->add_result(path.u8string());
           },
-          "An input path to a toml config")
+          "An input path to a TOML config")
       ->required(true)
       ->transform(NormalizePath)
       ->check(CLI::ExistingFile)
@@ -506,7 +506,7 @@ void App::SetUpSubcmdImpDis(CLI::App* sub) {
             imp_opt.input_path = path;
             conf_opt->add_result(path.u8string());
           },
-          "An input path to a toml config")
+          "An input path to a TOML config")
       ->required(true)
       ->transform(NormalizePath)
       ->check(CLI::ExistingFile)
@@ -588,7 +588,7 @@ void App::SetUpSubcmdImpText(CLI::App* sub) {
       ->transform(NormalizePath)
       ->check(CLI::ExistingFile);
 
-  std::vector<std::pair<std::string, ImportTxtOpt::OutFmt>> mapping{
+  const std::vector<std::pair<std::string, ImportTxtOpt::OutFmt>> mapping{
       {"NSUNI", ImportTxtOpt::kNSUNI}, {"NSLAR", ImportTxtOpt::kNSLAR}, {"split", ImportTxtOpt::kSplit}};
 
   sub_txt
@@ -596,7 +596,7 @@ void App::SetUpSubcmdImpText(CLI::App* sub) {
                    "Set the format of the output. The appropriate selection "
                    "depends on the target game")
       ->transform(EnumTransformer(mapping))
-      ->capture_default_str();
+      ->default_str(mapping.front().first);
 
   auto bitmap_group = sub_txt->add_option_group("FONT", "Note: ignored when an existing bitmap font is used");
 

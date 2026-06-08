@@ -96,7 +96,7 @@ void App::SetUpSubcmdExport() {
 
   auto asset_group = sub->add_option_group("3D_ASSET");
 
-  asset_group->add_flag("--flip,!--no-flip", exp_opt.flip, "Flip textures and uv's")->default_val(true);
+  asset_group->add_flag("--flip,!--no-flip", exp_opt.flip, "Flip textures and UVs")->default_val(true);
 
   asset_group
       ->add_flag("--visibility,!--no-visibility", exp_opt.visibility,
