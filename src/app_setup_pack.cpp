@@ -61,7 +61,7 @@ void App::SetUpSubcmdPackDig(CLI::App* pack) {
 
   sub->add_flag("--compress,!--no-compress", pac_opt.compress,
                 "Compress the archive entries if possible. Note: slows down loading")
-      ->default_val(false);
+      ->default_val(pac_opt.compress);
 
   sub->callback([this]() { this->RunSubcmdPackDig(); });
 }
@@ -157,7 +157,7 @@ CLI::App* App::SetUpSubcmdPack() {
   sub->add_flag("--recursive,!--no-recursive", pac_opt.recursive,
                 "Pack subfolders as nested containers first. This option should be "
                 "used consistently during both packing and unpacking.")
-      ->default_val(false);
+      ->default_val(pac_opt.recursive);
 
   sub->require_subcommand(1);
 

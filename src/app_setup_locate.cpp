@@ -105,7 +105,8 @@ void App::SetUpSubcmdLocStr(CLI::App* loc) {
 
   SetUpSubcmdLocShared(sub_str, loc_opt.search_path);
 
-  sub_str->add_flag("--caseless,!--no-caseless", loc_opt.caseless, "Ignore character case")->default_val(false);
+  sub_str->add_flag("--caseless,!--no-caseless", loc_opt.caseless, "Ignore character case")
+      ->default_val(loc_opt.caseless);
 
   sub_str->callback([this]() { this->RunSubcmdLocStr(); });
 }

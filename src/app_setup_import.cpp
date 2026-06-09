@@ -129,26 +129,27 @@ void App::SetUpSubcmdImpMdl(CLI::App* sub) {
       ->add_flag("--blend,!--no-blend", imp_opt.blend,
                  "Set an appropriate blend mode for materials that don't use one. "
                  "This might solve blending issues.\nAlso, consider using --sort")
-      ->default_val(false);
+      ->default_val(imp_opt.blend);
 
   asset_group
       ->add_flag("--sort,!--no-sort", imp_opt.sort,
                  "Sort meshes so that opaque meshes are drawn before transparent "
                  "ones. This might solve blending issues and improve performance")
-      ->default_val(false);
+      ->default_val(imp_opt.sort);
 
   asset_group
       ->add_flag("--merge-mat,!--no-merge-mat", imp_opt.materials,
                  "Merge duplicate materials: might improve performance")
-      ->default_val(false);
+      ->default_val(imp_opt.materials);
 
-  asset_group->add_flag("--flip,!--no-flip", imp_opt.flip, "Flip textures and UVs")->default_val(true);
+  asset_group->add_flag("--flip,!--no-flip", imp_opt.flip, "Flip textures and UVs")->default_val(imp_opt.flip);
+
   asset_group
       ->add_flag("--sskeleton,!--no-sskeleton", imp_opt.sskeleton,
                  "Construct a new simplified skeleton that uses only translations for "
                  "bones. This might get rid of unwanted transformations that affect "
                  "hitboxes, attached effects, animations")
-      ->default_val(false);
+      ->default_val(imp_opt.sskeleton);
 
   sub_mdl->add_option("-i,--input,input", imp_opt.input_path, "An input path to a glb asset")
       ->required(true)
@@ -183,11 +184,11 @@ void App::SetUpSubcmdImpMdl(CLI::App* sub) {
 
   collision_group
       ->add_flag("--wall,!--no-wall", imp_opt.wall, "Automatically set collision flags for wall and ceiling triangles")
-      ->default_val(true);
+      ->default_val(imp_opt.wall);
 
   collision_group
       ->add_flag("--cull,!--no-cull", imp_opt.cull, "Automatically remove non-ground triangles (when using -C)")
-      ->default_val(true);
+      ->default_val(imp_opt.cull);
 
   model_group
       ->add_option("--vcomp-lvl", imp_opt.compress_lvl,
@@ -200,28 +201,29 @@ void App::SetUpSubcmdImpMdl(CLI::App* sub) {
       ->add_flag("--indexed,!--no-indexed", imp_opt.use_indices,
                  "Use indexed buffers for drawing: makes performance a bit "
                  "worse on PSP, results in smaller files")
-      ->default_val(true);
+      ->default_val(imp_opt.use_indices);
 
   model_group
       ->add_flag("--optw,!--no-optw", imp_opt.optimize_weights,
                  "Remove unnecessary weights from vertex attributes: results "
                  "in smaller files (NSUNI only!)")
-      ->default_val(false);
+      ->default_val(imp_opt.optimize_weights);
 
   model_group
       ->add_flag("--strip,!--no-strip", imp_opt.use_strips,
                  "Use triangle strips for drawing: improves performance on PSP")
-      ->default_val(true);
+      ->default_val(imp_opt.use_strips);
 
   model_group
       ->add_flag("--stitch,!--no-stitch", imp_opt.stitch_strips,
                  "Stitch triangle strips using degenerate triangles: usually "
                  "improves performance")
-      ->default_val(true);
+      ->default_val(imp_opt.stitch_strips);
 
   SetUpComTextureOpt(texture_group, imp_opt);
 
-  animation_group->add_flag("--unbake,!--no-unbake", imp_opt.simplify, "Remove redundant keyframes")->default_val(true);
+  animation_group->add_flag("--unbake,!--no-unbake", imp_opt.simplify, "Remove redundant keyframes")
+      ->default_val(imp_opt.simplify);
 }
 
 void App::SetUpSubcmdImpCam(CLI::App* sub) {
@@ -363,7 +365,8 @@ void App::SetUpSubcmdImpLit(CLI::App* sub) {
       ->check(CLI::Range(0.0f, 1.0f))
       ->capture_default_str();
 
-  sub_lit->add_flag("--specular,!--no-specular", imp_opt.specular, "Enable the specular highlight")->default_val(false);
+  sub_lit->add_flag("--specular,!--no-specular", imp_opt.specular, "Enable the specular highlight")
+      ->default_val(imp_opt.specular);
 }
 
 void App::SetUpSubcmdImpSnd(CLI::App* sub) {
@@ -444,7 +447,7 @@ void App::SetUpSubcmdImpImg(CLI::App* sub) {
       ->add_flag("--nearest,!--no-nearest", imp_opt.nearest,
                  "Use the nearest filter for upscaling. This might reduce "
                  "scaling artifacts but could lead to a blocky look")
-      ->default_val(false);
+      ->default_val(imp_opt.nearest);
 }
 
 void App::SetUpSubcmdImpFog(CLI::App* sub) {
@@ -632,7 +635,7 @@ void App::SetUpSubcmdImpText(CLI::App* sub) {
                  "Simulate kerning. This adjusts the spacing between pairs of "
                  "some characters to improve visual layout, but it may greatly "
                  "increase the file size")
-      ->default_val(false);
+      ->default_val(imp_opt.kerning);
 
   SetUpComTextureOpt<false>(texture_group, imp_opt);
 
@@ -640,7 +643,7 @@ void App::SetUpSubcmdImpText(CLI::App* sub) {
       ->add_flag("--nearest,!--no-nearest", imp_opt.nearest,
                  "Use the nearest filter for upscaling. This might reduce "
                  "scaling artifacts but could lead to a blocky look")
-      ->default_val(false);
+      ->default_val(imp_opt.nearest);
 }
 
 CLI::App* App::SetUpSubcmdImport() {

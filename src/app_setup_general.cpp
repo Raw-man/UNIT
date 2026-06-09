@@ -92,7 +92,7 @@ void App::SetUpGeneral() {
       ->configurable(false);
 
   this->add_flag("--print-config,!--no-print-config", this->print_config, "Print options and their current values")
-      ->default_val(false);
+      ->default_val(this->print_config);
 
   this->fallthrough(true);
 

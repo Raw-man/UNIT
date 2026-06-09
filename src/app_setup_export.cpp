@@ -96,7 +96,7 @@ void App::SetUpSubcmdExport() {
 
   auto asset_group = sub->add_option_group("3D_ASSET");
 
-  asset_group->add_flag("--flip,!--no-flip", exp_opt.flip, "Flip textures and UVs")->default_val(true);
+  asset_group->add_flag("--flip,!--no-flip", exp_opt.flip, "Flip textures and UVs")->default_val(exp_opt.flip);
 
   asset_group
       ->add_flag("--visibility,!--no-visibility", exp_opt.visibility,
@@ -104,14 +104,14 @@ void App::SetUpSubcmdExport() {
                  "visibility animations via KHR_animation_pointer "
                  "and KHR_node_visibility. Note: Blender currently lacks "
                  "KHR_node_visibility support. Works with Godot 4.6+")
-      ->default_val(false);
+      ->default_val(exp_opt.visibility);
 
   asset_group->add_flag("--pack,!--no-pack", exp_opt.pack_textures, "Embed textures into .glb files")
-      ->default_val(false);
+      ->default_val(exp_opt.pack_textures);
 
   auto texture_group = sub->add_option_group("TEXTURE");
 
-  texture_group->add_flag("--mipmaps,!--no-mipmaps", exp_opt.mipmaps, "Export mipmaps")->default_val(false);
+  texture_group->add_flag("--mipmaps,!--no-mipmaps", exp_opt.mipmaps, "Export mipmaps")->default_val(exp_opt.mipmaps);
 
   auto text_group = sub->add_option_group("TEXT");
 

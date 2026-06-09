@@ -48,7 +48,7 @@ void App::SetUpSubcmdUnpack() {
                 "containers. --recursive=2 unpacks everything (not "
                 "recommended). This option should be "
                 "used consistently during both packing and unpacking.")
-      ->default_val(false);
+      ->default_val(unp_opt.recursive);
 
   sub->callback([this]() { this->RunSubcmdUnpack(); });
 }
