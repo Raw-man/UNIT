@@ -41,19 +41,7 @@ void SetUpComTextureOpt(CLI::App* texture_group, Opt& imp_opt) {
       ->check(CLI::Range(0u, 2u))
       ->capture_default_str();
 
-  texture_group
-      ->add_flag("--swizzle,!--no-swizzle", imp_opt.swizzle,
-                 "Rearrange texture data for the PSP's GU: greatly improves "
-                 "performance on PSP")
-      ->default_val(imp_opt.swizzle);
-
   if constexpr (extras) {
-    texture_group
-        ->add_flag("--dither,!--no-dither", imp_opt.dither,
-                   "Apply noise to create an illusion of a wider color range "
-                   "when compression is used")
-        ->default_val(imp_opt.dither);
-
     texture_group
         ->add_option("--max-wh", imp_opt.max_wh,
                      "Resize textures if width or height is too big; 512 is the "
@@ -74,7 +62,19 @@ void SetUpComTextureOpt(CLI::App* texture_group, Opt& imp_opt) {
                      "quality when compression is used")
         ->check(CLI::Range(1u, 256u))
         ->capture_default_str();
+
+    texture_group
+        ->add_flag("--dither,!--no-dither", imp_opt.dither,
+                   "Apply noise to create an illusion of a wider color range "
+                   "when compression is used")
+        ->default_val(imp_opt.dither);
   }
+
+  texture_group
+      ->add_flag("--swizzle,!--no-swizzle", imp_opt.swizzle,
+                 "Rearrange texture data for the PSP's GU: greatly improves "
+                 "performance on PSP")
+      ->default_val(imp_opt.swizzle);
 }
 
 void App::SetUpSubcmdImpMdl(CLI::App* sub) {
@@ -190,6 +190,13 @@ void App::SetUpSubcmdImpMdl(CLI::App* sub) {
       ->default_val(true);
 
   model_group
+      ->add_option("--vcomp-lvl", imp_opt.compress_lvl,
+                   "Compress vertex attributes: 0 - best quality, big files, "
+                   "worse performance on PSP")
+      ->check(CLI::Range(0u, 2u))
+      ->capture_default_str();
+
+  model_group
       ->add_flag("--indexed,!--no-indexed", imp_opt.use_indices,
                  "Use indexed buffers for drawing: makes performance a bit "
                  "worse on PSP, results in smaller files")
@@ -211,13 +218,6 @@ void App::SetUpSubcmdImpMdl(CLI::App* sub) {
                  "Stitch triangle strips using degenerate triangles: usually "
                  "improves performance")
       ->default_val(true);
-
-  model_group
-      ->add_option("--vcomp-lvl", imp_opt.compress_lvl,
-                   "Compress vertex attributes: 0 - best quality, big files, "
-                   "worse performance on PSP")
-      ->check(CLI::Range(0u, 2u))
-      ->capture_default_str();
 
   SetUpComTextureOpt(texture_group, imp_opt);
 
@@ -602,13 +602,6 @@ void App::SetUpSubcmdImpText(CLI::App* sub) {
 
   auto texture_group = sub_txt->add_option_group("TEXTURE", "");
 
-  bitmap_group
-      ->add_flag("--kerning,!--no-kerning", imp_opt.kerning,
-                 "Simulate kerning. This adjusts the spacing between pairs of "
-                 "some characters to improve visual layout, but it may greatly "
-                 "increase the file size")
-      ->default_val(false);
-
   bitmap_group->add_option("--spacing", imp_opt.tracking_offset, "A value added to space between glyphs")
       ->check(CLI::Range(-127, 127))
       ->capture_default_str();
@@ -633,6 +626,13 @@ void App::SetUpSubcmdImpText(CLI::App* sub) {
                    "The width and height of the bitmap. Values > 128 require a game patch")
       ->check(Pow2Range<128, 1024>())
       ->capture_default_str();
+
+  bitmap_group
+      ->add_flag("--kerning,!--no-kerning", imp_opt.kerning,
+                 "Simulate kerning. This adjusts the spacing between pairs of "
+                 "some characters to improve visual layout, but it may greatly "
+                 "increase the file size")
+      ->default_val(false);
 
   SetUpComTextureOpt<false>(texture_group, imp_opt);
 
