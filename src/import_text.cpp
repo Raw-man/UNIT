@@ -184,7 +184,7 @@ struct BinBitmapFont {
   nnl::Buffer advance_widths;
 };
 
-bool ImportDialog(const ImportTxtOpt& opt) {
+bool ImportText(const ImportTxtOpt& opt) {
   nnl::Buffer b = utl::LoadFile(opt.typeface_paths.at(0));
 
   if (opt.typeface_paths.size() > 1 && opt.kerning) {

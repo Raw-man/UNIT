@@ -108,7 +108,7 @@ struct ImportSndOpt {
   unsigned int max_sr = 22050;
 };
 
-struct ImportImgOpt {
+struct ImportTexOpt {
   fs::path input_path;
   fs::path output_path;
   fs::path base_path;

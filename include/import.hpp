@@ -22,9 +22,9 @@ bool ImportLight(const ImportLitOpt& opt);
 
 bool ImportPPHD8(const ImportSndOpt& opt);
 
-bool ImportTextureContainer(const ImportImgOpt& opt);
+bool ImportTextureContainer(const ImportTexOpt& opt);
 
-bool ImportDialog(const ImportTxtOpt& opt);
+bool ImportText(const ImportTxtOpt& opt);
 
 bool ImportFog(const ImportFogOpt& opt);
 

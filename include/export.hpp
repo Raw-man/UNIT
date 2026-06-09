@@ -23,10 +23,10 @@ bool ExportCollisionPartial(const collision::Collision& collision,
 bool ExportShadowCollisionPartial(const shadow_collision::Collision& collision,
                                   const ExportOptions& options);
 
-bool ExportDialog(const asset::AssetView& asset_container,
+bool ExportText(const asset::AssetView& asset_container,
                   const ExportOptions& options);
 
-bool ExportDialogPartial(const text::Text& text, const ExportOptions& options);
+bool ExportTextPartial(const text::Text& text, const ExportOptions& options);
 
 bool ExportPPHD8(const asset::AssetView& asset, const ExportOptions& options);
 

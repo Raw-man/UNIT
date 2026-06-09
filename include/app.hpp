@@ -124,7 +124,7 @@ class App : private CLI::App {
 
   void RunSubcmdImpDis();
 
-  void RunSubcmdImpText();
+  void RunSubcmdImpTxt();
 
   void RunSubcmdUnpack();
 
@@ -170,7 +170,7 @@ class App : private CLI::App {
 
   ImportSndOpt imp_snd_opt;
 
-  ImportImgOpt imp_img_opt;
+  ImportTexOpt imp_tex_opt;
 
   ImportFogOpt imp_fog_opt;
 

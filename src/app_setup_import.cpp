@@ -24,13 +24,13 @@ void App::RunSubcmdImpLit() { ImportLight(this->imp_lit_opt); }
 
 void App::RunSubcmdImpSnd() { ImportPPHD8(this->imp_snd_opt); }
 
-void App::RunSubcmdImpImg() { ImportTextureContainer(this->imp_img_opt); }
+void App::RunSubcmdImpImg() { ImportTextureContainer(this->imp_tex_opt); }
 
 void App::RunSubcmdImpFog() { ImportFog(this->imp_fog_opt); }
 
 void App::RunSubcmdImpDis() { ImportDistance(this->imp_dis_opt); }
 
-void App::RunSubcmdImpText() { ImportDialog(this->imp_txt_opt); };
+void App::RunSubcmdImpTxt() { ImportText(this->imp_txt_opt); };
 
 template <bool extras = true, typename Opt>
 void SetUpComTextureOpt(CLI::App* texture_group, Opt& imp_opt) {
@@ -422,7 +422,7 @@ void App::SetUpSubcmdImpImg(CLI::App* sub) {
 
   sub_ui->callback([this]() { this->RunSubcmdImpImg(); });
 
-  auto& imp_opt = this->imp_img_opt;
+  auto& imp_opt = this->imp_tex_opt;
 
   sub_ui->add_option("-i,--input,input", imp_opt.input_path, "An input path to a folder with images")
       ->required(true)
@@ -567,7 +567,7 @@ void App::SetUpSubcmdImpText(CLI::App* sub) {
       "\nThe command expects an .xlf file that contains original or translated text units.\n"
       "Poedit is recommended for managing them.");
 
-  sub_txt->callback([this]() { this->RunSubcmdImpText(); });
+  sub_txt->callback([this]() { this->RunSubcmdImpTxt(); });
 
   auto& imp_opt = this->imp_txt_opt;
 

@@ -67,7 +67,7 @@ bool Export(const ExportOptions& opt, bool exp_to_dir) {
     }
 
     if (category == asset::Category::kBitmapTextFull) {
-      return ExportDialog(asset_container, opt);
+      return ExportText(asset_container, opt);
     }
 
     if (category == asset::Category::kSoundBank) {
@@ -153,7 +153,7 @@ bool Export(const ExportOptions& opt, bool exp_to_dir) {
   if (asset_type == format::kText) {
     auto text = text::Import(bin_asset);
 
-    return ExportDialogPartial(text, opt);
+    return ExportTextPartial(text, opt);
   }
 
   if (asset_type == format::kModel) {

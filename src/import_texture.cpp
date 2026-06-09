@@ -3,7 +3,7 @@
 #include "threadpool.hpp"
 #include "utils.hpp"
 namespace unit {
-bool ImportTextureContainer(const ImportImgOpt& opt) {
+bool ImportTextureContainer(const ImportTexOpt& opt) {
   std::vector<std::future<void>> tasks;
 
   auto image_files = utl::GetSortedDirFiles(opt.input_path, {".png", ".jpg", ".jpeg", ".bmp"});

@@ -124,7 +124,7 @@ src/app_setup_detect.cpp
 src/export.cpp
 src/export_model.cpp
 src/export_minimap.cpp
-src/export_dialog.cpp
+src/export_text.cpp
 src/export_texture.cpp
 src/export_posd.cpp
 src/export_lit.cpp
@@ -140,7 +140,7 @@ src/import_minimap.cpp
 src/import_fog.cpp
 src/import_distance.cpp
 src/import_light.cpp
-src/import_dialog.cpp
+src/import_text.cpp
 src/import_sound.cpp
 src/import_texture.cpp
 src/unpack.cpp

@@ -128,7 +128,7 @@ void GenerateConfig(const ImportTxtOpt& imp_opt, const fs::path& output_path) {
   utl::SaveFile(output_path, toml);
 }
 
-bool ExportDialog(const asset::AssetView& asset_container, const ExportOptions& options) {
+bool ExportText(const asset::AssetView& asset_container, const ExportOptions& options) {
   auto text = text::Import(asset_container.at(asset::BitmapText::kText));
 
   auto textures = texture::Import(asset_container.at(asset::BitmapText::kTextureContainer));
@@ -153,7 +153,7 @@ bool ExportDialog(const asset::AssetView& asset_container, const ExportOptions& 
   return true;
 }
 
-bool ExportDialogPartial(const text::Text& text, const ExportOptions& options) {
+bool ExportTextPartial(const text::Text& text, const ExportOptions& options) {
   SerializeAsXLIFF(text, options);
 
   return true;
