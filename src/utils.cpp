@@ -183,13 +183,13 @@ fs::path GetConfigFile(const std::string& appname, const std::string& content) {
 
   if (config_path.empty()) return config_path;
 
-  config_path = config_path / fs::u8path(appname).stem();
+  config_path = config_path / fs::u8path("unit");
 
   bool created = fs::create_directories(config_path);
 
   config_path = config_path / fs::u8path(appname);
 
-  if (created) {
+  if (created || !fs::exists(config_path)) {
     std::ofstream out(config_path);
 
     if (!out.is_open()) return fs::path();
