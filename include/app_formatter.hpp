@@ -83,9 +83,9 @@ class Formatter : public CLI::Formatter {
           // Check if the option is a boolean flag
           if (!opt->get_fnames().empty()) {
             if (def_val == "1") {
-              def_val = "on";
+              def_val = "true";
             } else if (def_val == "0") {
-              def_val = "off";
+              def_val = "false";
             }
           }
 
