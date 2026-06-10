@@ -1,7 +1,6 @@
 #pragma once
 #include <CLI/CLI.hpp>
 #include <cassert>
-
 #include <string>
 
 #include "app_options.hpp"

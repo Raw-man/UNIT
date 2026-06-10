@@ -105,55 +105,62 @@ include_directories(
     $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/generated/include>
     )
 
-
-
-
-set(Sources
-src/main.cpp
-src/app.cpp
-src/app_setup_dnd.cpp
-src/app_setup_general.cpp
-src/app_setup_export.cpp
-src/app_setup_import.cpp
-src/app_setup_unpack.cpp
-src/app_setup_pack.cpp
-src/app_setup_md5.cpp
-src/app_setup_locate.cpp
-src/app_setup_detect.cpp
-
-src/export.cpp
-src/export_model.cpp
-src/export_minimap.cpp
-src/export_text.cpp
-src/export_texture.cpp
-src/export_posd.cpp
-src/export_lit.cpp
-src/export_fog.cpp
-src/export_distance.cpp
-src/export_pphd8.cpp
-
-src/import.cpp
-src/import_model.cpp
-src/import_camera.cpp
-src/import_position.cpp
-src/import_minimap.cpp
-src/import_fog.cpp
-src/import_distance.cpp
-src/import_light.cpp
-src/import_text.cpp
-src/import_sound.cpp
-src/import_texture.cpp
-src/unpack.cpp
-src/pack.cpp
-src/locate.cpp
-src/detect.cpp
-
-src/utils.cpp
-
-)
-
 add_executable(unit
-      ${Sources}
+    src/main.cpp
+    src/app.cpp
+    src/app_setup_dnd.cpp
+    src/app_setup_general.cpp
+    src/app_setup_export.cpp
+    src/app_setup_import.cpp
+    src/app_setup_unpack.cpp
+    src/app_setup_pack.cpp
+    src/app_setup_md5.cpp
+    src/app_setup_locate.cpp
+    src/app_setup_detect.cpp
+
+    src/export.cpp
+    src/export_model.cpp
+    src/export_minimap.cpp
+    src/export_text.cpp
+    src/export_texture.cpp
+    src/export_posd.cpp
+    src/export_lit.cpp
+    src/export_fog.cpp
+    src/export_distance.cpp
+    src/export_pphd8.cpp
+
+    src/import.cpp
+    src/import_model.cpp
+    src/import_camera.cpp
+    src/import_position.cpp
+    src/import_minimap.cpp
+    src/import_fog.cpp
+    src/import_distance.cpp
+    src/import_light.cpp
+    src/import_text.cpp
+    src/import_sound.cpp
+    src/import_texture.cpp
+    src/unpack.cpp
+    src/pack.cpp
+    src/locate.cpp
+    src/detect.cpp
+    src/utils.cpp
+
+    include/app.hpp
+    include/app_formatter.hpp
+    include/app_options.hpp
+    include/collision_json.hpp
+    include/detect.hpp
+    include/exception.hpp
+    include/export.hpp
+    include/import.hpp
+    include/locate.hpp
+    include/logger.hpp
+    include/pack.hpp
+    include/unpack.hpp
+    include/threadpool.hpp
+    include/utils.hpp
+    include/validators.hpp
 )
 
 target_link_libraries(unit PUBLIC Threads::Threads NNL::NNL CLI11::CLI11 agauniyal::rang pugixml::static SndFile::sndfile SampleRate::samplerate)

@@ -3,18 +3,17 @@
 #include <CLI/CLI.hpp>
 #include <filesystem>
 #include <string>
-#include "utils.hpp"
+
 #include "NNL/utility/string.hpp"
+#include "utils.hpp"
 
 namespace unit {
 
 struct ExistingParentPathValidator : public CLI::Validator {
-  ExistingParentPathValidator(const std::string& desc = "PATH")
-      : Validator(desc) {
+  ExistingParentPathValidator(const std::string& desc = "PATH") : Validator(desc) {
     name_ = "ExistingParentPath";
     func_ = [](const std::string& str) {
-
-      if(str.empty()){
+      if (str.empty()) {
         return std::string("Path is empty");
       }
 
@@ -37,13 +36,11 @@ inline const ExistingParentPathValidator ExistingParentPathDir{"DIR"};
 template <std::size_t min_val, std::size_t max_val>
 class Pow2Range : public CLI::Validator {
  public:
-  explicit Pow2Range(const std::string& validator_name = {})
-      : Validator(validator_name) {
+  explicit Pow2Range(const std::string& validator_name = {}) : Validator(validator_name) {
     static_assert(IsPow2(min_val) && IsPow2(max_val) && max_val > min_val);
 
     if (validator_name.empty()) {
-      std::string out = "UINT in [" + std::to_string(min_val) + " - " +
-                        std::to_string(max_val) + "]";
+      std::string out = "UINT in [" + std::to_string(min_val) + " - " + std::to_string(max_val) + "]";
       description(out);
     }
 
@@ -91,8 +88,7 @@ struct ValidHexValidator : public CLI::Validator {
     name_ = "IsHexString";
     func_ = [](const std::string& str) {
       const auto IsValidHex = [](char c) -> bool {
-        return (c >= '0' && c <= '9') || (c >= 'A' && c <= 'F') ||
-               (c >= 'a' && c <= 'f') || (c == 32);
+        return (c >= '0' && c <= '9') || (c >= 'A' && c <= 'F') || (c >= 'a' && c <= 'f') || (c == 32);
       };
 
       for (char c : str) {
@@ -110,7 +106,6 @@ struct ValidBCP47Validator : public CLI::Validator {
   ValidBCP47Validator() : Validator("BCP47") {
     name_ = "IsBCP47Tag";
     func_ = [](const std::string& str) {
-
       auto parts = nnl::utl::string::Split(str, "-");
 
       if (parts.empty() || parts.size() > 2) return std::string("BCP47: invalid structure");
@@ -140,7 +135,6 @@ struct ValidBCP47Validator : public CLI::Validator {
       }
 
       return std::string();
-
     };
   }
 };
@@ -148,7 +142,6 @@ struct ValidBCP47Validator : public CLI::Validator {
 const static ValidBCP47Validator ValidBCP47;
 
 inline const auto NormalizePath = [](const std::string& str) -> std::string {
-
   auto full_path = utl::NormalizePath(fs::u8path(str));
 
   return full_path.u8string();

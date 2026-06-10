@@ -13,16 +13,13 @@ class Exception : public std::exception {
   virtual ~Exception() = default;
 
  protected:
-  static std::string Name(const std::string& ename) {
-    return "[unit." + ename + "] ";
-  }
+  static std::string Name(const std::string& ename) { return "[unit." + ename + "] "; }
   const std::string m;
 };
 
 class RuntimeError : public Exception {
  public:
-  RuntimeError(const std::string& what_arg)
-      : Exception(Exception::Name("runtime_error") + what_arg) {}
+  RuntimeError(const std::string& what_arg) : Exception(Exception::Name("runtime_error") + what_arg) {}
 };
 
 }  // namespace unit

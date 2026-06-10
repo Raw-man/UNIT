@@ -1,8 +1,7 @@
 #pragma once
 
-#include "app_options.hpp"
-
 #include "NNL/nnl.hpp"
+#include "app_options.hpp"
 
 namespace unit {
 
@@ -10,31 +9,23 @@ namespace fs = std::filesystem;
 
 using namespace nnl;
 
+bool ExportModelContainer(const asset::AssetView& asset_container, const ExportOptions& options);
 
-bool ExportModelContainer(const asset::AssetView& asset_container,
-                          const ExportOptions& options);
+bool ExportModelPartial(const model::Model& model, const ExportOptions& options);
 
-bool ExportModelPartial(const model::Model& model,
-                        const ExportOptions& options);
+bool ExportCollisionPartial(const collision::Collision& collision, const ExportOptions& options);
 
-bool ExportCollisionPartial(const collision::Collision& collision,
-                            const ExportOptions& options);
+bool ExportShadowCollisionPartial(const shadow_collision::Collision& collision, const ExportOptions& options);
 
-bool ExportShadowCollisionPartial(const shadow_collision::Collision& collision,
-                                  const ExportOptions& options);
-
-bool ExportText(const asset::AssetView& asset_container,
-                  const ExportOptions& options);
+bool ExportText(const asset::AssetView& asset_container, const ExportOptions& options);
 
 bool ExportTextPartial(const text::Text& text, const ExportOptions& options);
 
 bool ExportPPHD8(const asset::AssetView& asset, const ExportOptions& options);
 
-bool ExportTextureContainer(const texture::TextureContainer& textures,
-                            const ExportOptions& options);
+bool ExportTextureContainer(const texture::TextureContainer& textures, const ExportOptions& options);
 
-bool ExportPositionData(const posd::PositionData& positions,
-                        const ExportOptions& options);
+bool ExportPositionData(const posd::PositionData& positions, const ExportOptions& options);
 
 bool ExportLit(const lit::Lit& lit, const ExportOptions& options);
 

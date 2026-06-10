@@ -95,7 +95,7 @@ struct ImportTxtOpt {
   int tracking_offset = 0;
   float opacity = 1.5f;
 
-  //texture opt
+  // texture opt
   unsigned int texture_compress_lvl = 1;
   bool nearest = false;
   bool swizzle = true;

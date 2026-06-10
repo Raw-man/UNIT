@@ -2,7 +2,6 @@
 
 #include "app.hpp"
 
-
 #define UNIT_LOG(t, v)                    \
   do {                                    \
     auto& app = unit::App::GetInstance(); \
